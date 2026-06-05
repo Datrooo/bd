@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Доступ запрещен')}"></head>
+<body>
+<main class="container py-5">
+    <section class="panel-card narrow-card mx-auto text-center">
+        <div class="eyebrow">403</div>
+        <h1 class="section-title">Недостаточно прав</h1>
+        <p class="section-description">
+            У текущей роли нет доступа к этому разделу.
+        </p>
+        <a class="btn btn-dark" th:href="@{/dashboard}">Вернуться на обзор</a>
+    </section>
+</main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
+

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card" th:object="${garageObject}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Гараж</div>
+                <h1 class="section-title mb-1" th:text="${pageTitle}">Новый объект</h1>
+                <p class="section-description mb-0">Основные атрибуты объекта гаражного хозяйства и его место в иерархии.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/garage-objects}">К списку</a>
+        </div>
+        <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+        </div>
+        <form th:action="@{${formAction}}" th:object="${garageObject}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-6">
+                <label class="form-label" for="name">Название</label>
+                <input id="name" th:field="*{name}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="objectType">Тип объекта</label>
+                <select id="objectType" th:field="*{objectType}" class="form-select" required>
+                    <option th:each="objectType : ${objectTypes}" th:value="${objectType}" th:text="${objectType}">GARAGE</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('objectType')}" th:errors="*{objectType}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="parentObjectId">Родительский объект</label>
+                <select id="parentObjectId" th:field="*{parentObjectId}" class="form-select">
+                    <option value="">Нет</option>
+                    <option th:each="parent : ${parents}" th:value="${parent.id}" th:text="${parent.name}">Гараж №1</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="workshopId">Цех</label>
+                <select id="workshopId" th:field="*{workshopId}" class="form-select">
+                    <option value="">Не задан</option>
+                    <option th:each="workshop : ${workshops}" th:value="${workshop.id}" th:text="${workshop.name}">Транспортный цех</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="sectionId">Участок</label>
+                <select id="sectionId" th:field="*{sectionId}" class="form-select">
+                    <option value="">Не задан</option>
+                    <option th:each="section : ${sections}" th:value="${section.id}" th:text="${section.label}">Цех / участок</option>
+                </select>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label" for="address">Адрес</label>
+                <input id="address" th:field="*{address}" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="capacity">Вместимость</label>
+                <input id="capacity" th:field="*{capacity}" type="number" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></div>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="description">Описание</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark" th:text="${submitLabel}">Сохранить</button>
+                <a class="btn btn-outline-dark" th:href="@{/garage-objects}">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card" th:object="${workshop}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Оргструктура</div>
+                <h1 class="section-title mb-1" th:text="${pageTitle}">Новый цех</h1>
+                <p class="section-description mb-0">Основные данные цеха и руководителя.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/workshops}">К списку</a>
+        </div>
+        <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+        </div>
+        <form th:action="@{${formAction}}" th:object="${workshop}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-8">
+                <label class="form-label" for="name">Название</label>
+                <input id="name" th:field="*{name}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="chiefEmployeeId">Начальник цеха</label>
+                <select id="chiefEmployeeId" th:field="*{chiefEmployeeId}" class="form-select">
+                    <option value="">Не назначен</option>
+                    <option th:each="employee : ${employees}" th:value="${employee.id}" th:text="${employee.fullName}">Иванов И.И.</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="description">Описание</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark" th:text="${submitLabel}">Сохранить</button>
+                <a class="btn btn-outline-dark" th:href="@{/workshops}">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

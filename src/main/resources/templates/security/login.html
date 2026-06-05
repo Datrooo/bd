@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Вход в систему')}"></head>
+<body class="login-screen">
+<main class="container py-5">
+    <div class="row justify-content-center align-items-stretch g-4">
+        <div class="col-lg-5">
+            <section class="login-card h-100">
+                <div class="eyebrow">Вход в систему</div>
+                <h1 class="login-title">Auto Enterprise IS</h1>
+                <p class="login-copy">
+                    Аутентификация переведена на таблицы <code>app_user</code>, <code>role</code> и <code>user_role</code>.
+                    Пароли проверяются через Spring Security, а локальные dev-учетки доступны только при запуске с dev-seed.
+                </p>
+
+                <div class="alert alert-danger" th:if="${param.error}">
+                    Неверный логин или пароль.
+                </div>
+
+                <div class="alert alert-success" th:if="${param.logout}">
+                    Сеанс завершен.
+                </div>
+
+                <form class="login-form" th:action="@{/login}" method="post">
+                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div class="mb-3">
+                        <label class="form-label" for="username">Логин</label>
+                        <input id="username" name="username" type="text" class="form-control form-control-lg" autocomplete="username" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" for="password">Пароль</label>
+                        <input id="password" name="password" type="password" class="form-control form-control-lg" autocomplete="current-password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg w-100">Войти</button>
+                </form>
+            </section>
+        </div>
+
+        <div class="col-lg-6" th:if="${showDevAccounts}">
+            <section class="panel-card h-100">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <div>
+                        <div class="eyebrow">Локальный dev seed</div>
+                        <h2 class="section-title mb-0">Учетные записи для проверки ролей</h2>
+                    </div>
+                    <span class="badge text-bg-warning">Только для локальной среды</span>
+                </div>
+
+                <div class="demo-account-list">
+                    <article class="demo-account" th:each="account : ${demoAccounts}">
+                        <div class="demo-account__header">
+                            <h3 th:text="${account.username}">superadmin</h3>
+                            <span th:text="${account.rolesLabel}">SUPERADMIN</span>
+                        </div>
+                        <p th:text="${account.description}">Описание.</p>
+                        <div class="demo-account__meta">
+                            <code th:text="${account.username}">superadmin</code>
+                            <code th:text="${account.password}">superadmin</code>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

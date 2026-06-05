@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card" th:object="${assignment}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Оргструктура</div>
+                <h1 class="section-title mb-1" th:text="${pageTitle}">Новое назначение водителя</h1>
+                <p class="section-description mb-0">Закрепление сотрудника-водителя за конкретным транспортом.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/vehicle-driver-assignments}">К списку</a>
+        </div>
+        <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+        </div>
+        <form th:action="@{${formAction}}" th:object="${assignment}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-6">
+                <label class="form-label" for="vehicleId">Транспорт</label>
+                <select id="vehicleId" th:field="*{vehicleId}" class="form-select" required>
+                    <option value="">Выберите транспорт</option>
+                    <option th:each="vehicle : ${vehicles}" th:value="${vehicle.id}" th:text="${vehicle.label}">INV-001 / А111АА54</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('vehicleId')}" th:errors="*{vehicleId}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="driverEmployeeId">Водитель</label>
+                <select id="driverEmployeeId" th:field="*{driverEmployeeId}" class="form-select" required>
+                    <option value="">Выберите сотрудника</option>
+                    <option th:each="employee : ${employees}" th:value="${employee.id}" th:text="${employee.fullName}">Иванов И.И.</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('driverEmployeeId')}" th:errors="*{driverEmployeeId}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="assignmentType">Тип назначения</label>
+                <select id="assignmentType" th:field="*{assignmentType}" class="form-select" required>
+                    <option th:each="assignmentType : ${assignmentTypes}" th:value="${assignmentType}" th:text="${assignmentType}">PRIMARY</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('assignmentType')}" th:errors="*{assignmentType}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="startDate">Дата начала</label>
+                <input id="startDate" th:field="*{startDate}" type="date" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="endDate">Дата окончания</label>
+                <input id="endDate" th:field="*{endDate}" type="date" class="form-control">
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="notes">Примечания</label>
+                <textarea id="notes" th:field="*{notes}" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark" th:text="${submitLabel}">Сохранить</button>
+                <a class="btn btn-outline-dark" th:href="@{/vehicle-driver-assignments}">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

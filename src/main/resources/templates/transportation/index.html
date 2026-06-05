@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Эксплуатация')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Этап 4</div>
+                <h1 class="section-title mb-1">Эксплуатация и перевозки</h1>
+                <p class="section-description mb-0">Назначение транспорта на маршруты и учет эксплуатационных записей.</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/route-vehicle-assignments}">
+                    <div class="card-body">
+                        <div class="module-tag">Закрепления</div>
+                        <h2 class="module-title">Транспорт на маршрутах</h2>
+                        <p class="module-copy">Назначение машин на маршруты и смены.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/transportation-records}">
+                    <div class="card-body">
+                        <div class="module-tag">Записи</div>
+                        <h2 class="module-title">Эксплуатационные записи</h2>
+                        <p class="module-copy">Пассажирские, грузовые и служебные рейсы с пробегом и выручкой.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

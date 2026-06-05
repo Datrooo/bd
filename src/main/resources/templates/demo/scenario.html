@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
+            <div>
+                <div class="eyebrow" th:text="${appStageCurrent}">Этап 7</div>
+                <h1 class="section-title mb-1">Демо-сценарий проекта</h1>
+                <p class="section-description mb-0">
+                    Финальный этап закрывает не новый модуль, а готовность проекта к показу:
+                    ниже собраны краткие маршруты по ролям, опорные переходы по разделам и технический сценарий для `SUPERADMIN`.
+                </p>
+            </div>
+            <div class="module-tag">Project ready</div>
+        </div>
+    </section>
+
+    <section class="panel-card mb-4">
+        <div class="section-header">
+            <div>
+                <div class="eyebrow">Рекомендации</div>
+                <h2 class="section-title">Что показывать под текущей ролью</h2>
+            </div>
+            <div class="section-note">Сценарии ниже отфильтрованы по ролям текущего пользователя и опираются на уже загруженный dev-seed.</div>
+        </div>
+
+        <div class="scenario-grid mt-4">
+            <article class="scenario-card" th:each="track : ${recommendedTracks}">
+                <div class="scenario-card__header">
+                    <div>
+                        <div class="module-tag mb-2" th:text="${track.rolesLabel}">SUPERADMIN</div>
+                        <h3 class="module-title" th:text="${track.title}">Сценарий</h3>
+                    </div>
+                    <a class="btn btn-sm btn-outline-dark" th:href="@{|${track.primaryPath}|}" th:text="${track.primaryLabel}">Открыть</a>
+                </div>
+                <p class="module-copy" th:text="${track.summary}">Описание сценария.</p>
+                <div class="scenario-step-list">
+                    <article class="scenario-step" th:each="step : ${track.steps}">
+                        <div class="d-flex justify-content-between gap-3 align-items-start">
+                            <div>
+                                <div class="meta-label" th:text="${step.title}">Шаг</div>
+                                <div class="module-copy mb-0" th:text="${step.description}">Описание шага.</div>
+                            </div>
+                            <a class="scenario-step__path" th:href="@{|${step.path}|}" th:text="${step.path}">/reports/r29</a>
+                        </div>
+                    </article>
+                </div>
+                <div class="sql-console-example mt-3" th:if="${track.sampleSql != null}">
+                    <div class="meta-label mb-2">Пример SQL</div>
+                    <pre class="sql-console-sample mb-0" th:text="${track.sampleSql}">SELECT 1;</pre>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="row g-4 mb-4">
+        <div class="col-lg-7">
+            <section class="panel-card h-100">
+                <div class="eyebrow">Полный маршрут</div>
+                <h2 class="section-title">Все демонстрационные треки</h2>
+                <div class="scenario-track-list mt-4">
+                    <article class="scenario-track" th:each="track : ${tracks}">
+                        <div class="d-flex justify-content-between gap-3 flex-wrap">
+                            <div>
+                                <h3 class="module-title h5 mb-1" th:text="${track.title}">Трек</h3>
+                                <div class="module-copy mb-2" th:text="${track.summary}">Краткое описание.</div>
+                                <div class="detail-value">Роли: <span th:text="${track.rolesLabel}">VIEWER</span></div>
+                            </div>
+                            <a class="btn btn-sm btn-outline-dark align-self-start" th:href="@{|${track.primaryPath}|}" th:text="${track.primaryLabel}">Открыть</a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-5">
+            <section class="panel-card h-100">
+                <div class="eyebrow">Acceptance</div>
+                <h2 class="section-title">Итоговая проверка перед показом</h2>
+                <ul class="planned-list">
+                    <li>Логин проходит через таблицы `app_user`, `role` и `user_role`.</li>
+                    <li>CRUD-разделы открываются в пределах ролевой матрицы без placeholder-страниц.</li>
+                    <li>Отчеты выполняются на реальных данных seed и возвращают табличный результат.</li>
+                    <li>`/sql-console` доступен только `SUPERADMIN` и принимает только read-only `SELECT/WITH`.</li>
+                    <li>Для ошибочных маршрутов и отказов доступа есть отдельные error-страницы.</li>
+                </ul>
+            </section>
+        </div>
+    </section>
+
+    <section class="panel-card" th:if="${showDevAccounts}">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+                <div class="eyebrow">Локальный dev seed</div>
+                <h2 class="section-title mb-0">Учетные записи для демонстрации ролей</h2>
+            </div>
+            <span class="badge text-bg-warning">Только для локальной среды</span>
+        </div>
+
+        <div class="demo-account-list">
+            <article class="demo-account" th:each="account : ${demoAccounts}">
+                <div class="demo-account__header">
+                    <h3 th:text="${account.username}">superadmin</h3>
+                    <span th:text="${account.rolesLabel}">SUPERADMIN</span>
+                </div>
+                <p th:text="${account.description}">Описание роли.</p>
+                <div class="demo-account__meta">
+                    <code th:text="${account.username}">superadmin</code>
+                    <code th:text="${account.password}">superadmin</code>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

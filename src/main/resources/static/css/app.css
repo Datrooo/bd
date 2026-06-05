@@ -1,0 +1,445 @@
+:root {
+    --app-bg: #f1efe8;
+    --app-panel: #fffdf8;
+    --app-panel-strong: #14252c;
+    --app-ink: #102028;
+    --app-muted: #5f6f77;
+    --app-line: rgba(16, 32, 40, 0.12);
+    --app-accent: #cc6a2d;
+    --app-accent-soft: rgba(204, 106, 45, 0.12);
+    --app-success-soft: rgba(36, 120, 91, 0.1);
+    --app-shadow: 0 24px 60px rgba(17, 33, 39, 0.08);
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    background:
+        radial-gradient(circle at top right, rgba(204, 106, 45, 0.18), transparent 24rem),
+        radial-gradient(circle at left center, rgba(20, 37, 44, 0.12), transparent 28rem),
+        var(--app-bg);
+    color: var(--app-ink);
+    font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+code,
+.brand-kicker,
+.module-path,
+.detail-label,
+.footer-meta {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+.app-navbar {
+    background: rgba(16, 32, 40, 0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navbar-brand {
+    color: #fff;
+    text-decoration: none;
+}
+
+.brand-kicker {
+    color: #f2b278;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.brand-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: #fff;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}
+
+.auth-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 1rem;
+    color: #fff;
+    padding: 0.55rem 0.9rem;
+}
+
+.auth-label {
+    color: rgba(255, 255, 255, 0.58);
+    letter-spacing: 0.08em;
+}
+
+.hero-shell {
+    padding: 2rem 0 1rem;
+}
+
+.hero-card,
+.panel-card,
+.login-card,
+.module-card {
+    background: var(--app-panel);
+    border: 1px solid var(--app-line);
+    border-radius: 1.4rem;
+    box-shadow: var(--app-shadow);
+}
+
+.hero-card {
+    overflow: hidden;
+    padding: 2.25rem;
+    position: relative;
+}
+
+.hero-card::before {
+    background: linear-gradient(135deg, rgba(204, 106, 45, 0.18), rgba(20, 37, 44, 0.02));
+    content: "";
+    inset: 0;
+    position: absolute;
+}
+
+.hero-card > * {
+    position: relative;
+}
+
+.eyebrow {
+    color: var(--app-accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hero-title,
+.section-title,
+.login-title {
+    color: var(--app-ink);
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.hero-title {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    margin: 0.5rem 0 1rem;
+}
+
+.hero-copy,
+.section-description,
+.login-copy,
+.module-copy,
+.footer-copy {
+    color: var(--app-muted);
+}
+
+.hero-stats {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.stat-chip {
+    background: rgba(16, 32, 40, 0.05);
+    border: 1px solid rgba(16, 32, 40, 0.08);
+    border-radius: 1rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.95rem 1rem;
+}
+
+.stat-chip__value {
+    color: var(--app-panel-strong);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.stat-chip__label {
+    align-self: center;
+    color: var(--app-muted);
+    font-size: 0.92rem;
+}
+
+.section-stack {
+    padding-top: 1rem;
+}
+
+.section-header {
+    align-items: end;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.section-note {
+    color: var(--app-muted);
+    max-width: 32rem;
+}
+
+.module-card .card-body,
+.panel-card,
+.login-card {
+    padding: 1.5rem;
+}
+
+.module-tag {
+    background: var(--app-success-soft);
+    border-radius: 999px;
+    color: #24785b;
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+    padding: 0.35rem 0.7rem;
+}
+
+.module-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.module-path {
+    background: var(--app-accent-soft);
+    border-radius: 999px;
+    color: var(--app-accent);
+    font-size: 0.78rem;
+    padding: 0.32rem 0.62rem;
+    white-space: nowrap;
+}
+
+.module-meta {
+    color: var(--app-muted);
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.94rem;
+}
+
+.meta-label,
+.detail-label {
+    color: var(--app-ink);
+    font-weight: 600;
+}
+
+.login-screen {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-card {
+    background: linear-gradient(180deg, rgba(204, 106, 45, 0.14), rgba(255, 255, 255, 0.9));
+}
+
+.login-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: 0.35rem 0 0.85rem;
+}
+
+.demo-account-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.demo-account {
+    background: rgba(16, 32, 40, 0.04);
+    border: 1px solid rgba(16, 32, 40, 0.08);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.demo-account__header {
+    align-items: baseline;
+    display: flex;
+    gap: 0.8rem;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.demo-account__header h3 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.demo-account__header span {
+    color: var(--app-accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.demo-account__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.demo-account__meta code {
+    background: rgba(16, 32, 40, 0.07);
+    border-radius: 0.6rem;
+    color: var(--app-ink);
+    padding: 0.35rem 0.55rem;
+}
+
+.detail-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-top: 1.4rem;
+}
+
+.detail-item {
+    background: rgba(16, 32, 40, 0.04);
+    border: 1px solid rgba(16, 32, 40, 0.08);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.detail-label {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+}
+
+.detail-value {
+    font-weight: 600;
+}
+
+.planned-list {
+    color: var(--app-muted);
+    display: grid;
+    gap: 0.7rem;
+    margin: 1.2rem 0 1.5rem;
+    padding-left: 1.2rem;
+}
+
+.sql-console-editor,
+.sql-console-sample {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+.sql-console-editor {
+    min-height: 18rem;
+    resize: vertical;
+}
+
+.sql-console-example {
+    background: rgba(16, 32, 40, 0.05);
+    border: 1px solid rgba(16, 32, 40, 0.08);
+    border-radius: 1rem;
+    margin-top: 1.25rem;
+    padding: 1rem;
+}
+
+.sql-console-sample {
+    color: var(--app-panel-strong);
+    font-size: 0.92rem;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.scenario-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.scenario-card,
+.scenario-track {
+    background: rgba(16, 32, 40, 0.04);
+    border: 1px solid rgba(16, 32, 40, 0.08);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.scenario-card__header {
+    align-items: start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.scenario-step-list,
+.scenario-track-list {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.scenario-step {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(16, 32, 40, 0.08);
+    border-radius: 0.9rem;
+    padding: 0.85rem 0.95rem;
+}
+
+.scenario-step__path {
+    background: var(--app-accent-soft);
+    border-radius: 999px;
+    color: var(--app-accent);
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    padding: 0.32rem 0.62rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.scenario-step__path:hover,
+.scenario-step__path:focus {
+    color: var(--app-accent);
+    text-decoration: underline;
+}
+
+.app-footer {
+    border-top: 1px solid var(--app-line);
+    color: var(--app-muted);
+    margin-top: auto;
+    padding: 1.4rem 0 2rem;
+}
+
+.footer-title {
+    color: var(--app-ink);
+    font-weight: 700;
+}
+
+.footer-meta {
+    align-self: end;
+    color: var(--app-muted);
+}
+
+.narrow-card {
+    max-width: 34rem;
+}
+
+@media (max-width: 991.98px) {
+    .auth-pill,
+    .navbar form {
+        margin-top: 1rem;
+    }
+
+    .section-header {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .scenario-card__header {
+        flex-direction: column;
+    }
+}

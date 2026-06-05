@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card" th:object="${user}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Пользователи</div>
+                <h1 class="section-title mb-1" th:text="${pageTitle}">Новый пользователь</h1>
+                <p class="section-description mb-0">Укажите логин, роли и при необходимости свяжите учетную запись с сотрудником.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/users}">К списку</a>
+        </div>
+
+        <form th:action="@{${formAction}}" th:object="${user}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="col-12">
+                <div class="alert alert-danger mb-0" th:if="${#fields.hasGlobalErrors()}">
+                    <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="username">Логин</label>
+                <input id="username" th:field="*{username}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="rawPassword">Пароль</label>
+                <input id="rawPassword" th:field="*{rawPassword}" type="password" class="form-control" th:placeholder="${user.id == null} ? 'Обязателен при создании' : 'Оставьте пустым, чтобы не менять'">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('rawPassword')}" th:errors="*{rawPassword}"></div>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label" for="employeeId">Связанный сотрудник</label>
+                <select id="employeeId" th:field="*{employeeId}" class="form-select">
+                    <option value="">Без привязки</option>
+                    <option th:each="employee : ${employees}" th:value="${employee.id}" th:text="${employee.fullName}">Иванов Иван Иванович</option>
+                </select>
+            </div>
+            <div class="col-md-4 form-check mt-4 ms-3">
+                <input id="active" th:field="*{active}" class="form-check-input" type="checkbox">
+                <label class="form-check-label" for="active">Учетная запись активна</label>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="roleIds">Роли</label>
+                <select id="roleIds" th:field="*{roleIds}" class="form-select" multiple size="6">
+                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}">ADMIN</option>
+                </select>
+                <div class="form-text">Удерживайте `Ctrl` / `Cmd` для выбора нескольких ролей.</div>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('roleIds')}" th:errors="*{roleIds}"></div>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark" th:text="${submitLabel}">Создать</button>
+                <a class="btn btn-outline-dark" th:href="@{/users}">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Отчеты')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+            <div>
+                <div class="eyebrow">Этап 5</div>
+                <h1 class="section-title mb-1">Каталог отчетов</h1>
+                <p class="section-description mb-0">Все 29 предметных SQL-отчетов сгруппированы по тематическим блокам и выполняются поверх актуальной PostgreSQL-схемы.</p>
+            </div>
+            <div class="module-tag">JdbcTemplate + named parameters</div>
+        </div>
+    </section>
+
+    <div class="row g-4" th:each="group : ${groups}">
+        <div class="col-12">
+            <section class="panel-card">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <div class="eyebrow">Тематическая группа</div>
+                        <h2 class="section-title mb-1" th:text="${group.title}">Автопарк и водители</h2>
+                        <p class="section-description mb-0">Выберите нужный аналитический срез.</p>
+                    </div>
+                    <div class="text-muted small" th:text="|${#lists.size(group.reports)} отчет(ов)|">7 отчетов</div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6 col-xl-4" th:each="report : ${group.reports}">
+                        <a class="card module-card h-100 text-decoration-none" th:href="@{|/reports/${report.code}|}">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start gap-3">
+                                    <div class="module-tag" th:text="${report.parameterSummary}">Без параметров</div>
+                                    <span class="module-path" th:text="${#strings.toUpperCase(report.code)}">R01</span>
+                                </div>
+                                <h3 class="module-title mb-2" th:text="${report.title}">Данные об автопарке предприятия</h3>
+                                <p class="module-copy mb-3" th:text="${report.description}">Описание отчета.</p>
+                                <div class="module-meta mt-auto">
+                                    <div><span class="meta-label">Доступ:</span> все аутентифицированные роли</div>
+                                    <div><span class="meta-label">Параметры:</span> <span th:text="${report.parameterSummary}">Без параметров</span></div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Страница не найдена')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<main class="container py-5">
+    <section class="panel-card narrow-card mx-auto text-center">
+        <div class="eyebrow">404</div>
+        <h1 class="section-title">Страница не найдена</h1>
+        <p class="section-description">
+            Запрошенный маршрут не существует или был перемещен. Вернитесь на обзор и продолжите работу из доступной навигации.
+        </p>
+        <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
+            <a class="btn btn-dark" th:href="@{/dashboard}">Вернуться на обзор</a>
+            <a class="btn btn-outline-dark" th:href="@{/demo-scenario}">Открыть demo-сценарий</a>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

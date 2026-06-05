@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Пользователи')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <section class="panel-card">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+            <div>
+                <div class="eyebrow">CRUD</div>
+                <h1 class="section-title mb-1">Пользователи</h1>
+                <p class="section-description mb-0">Учетные записи приложения, привязка к сотрудникам и назначение ролей.</p>
+            </div>
+            <a class="btn btn-dark" th:href="@{/users/new}" th:if="${@roleAccess.has(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN)}">Добавить пользователя</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Логин</th>
+                    <th>Сотрудник</th>
+                    <th>Роли</th>
+                    <th>Статус</th>
+                    <th>Создан</th>
+                    <th>Последний вход</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${page.isEmpty()}">
+                    <td colspan="7" class="text-center text-muted py-4">Пользователи пока не добавлены.</td>
+                </tr>
+                <tr th:each="user : ${page.content}">
+                    <td th:text="${user.username}">admin</td>
+                    <td th:text="${user.employeeName} ?: '—'">Иванов Иван Иванович</td>
+                    <td th:text="${user.rolesLabel}">ADMIN</td>
+                    <td>
+                        <span class="badge" th:classappend="${user.active} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${user.active} ? 'Активен' : 'Заблокирован'">Активен</span>
+                    </td>
+                    <td th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}">27.04.2026 23:00</td>
+                    <td th:text="${user.lastLoginAt != null ? #temporals.format(user.lastLoginAt, 'dd.MM.yyyy HH:mm') : '—'}">—</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end flex-wrap" th:if="${@roleAccess.has(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN)}">
+                            <a class="btn btn-sm btn-outline-dark" th:href="@{|/users/${user.id}/edit|}">Изменить</a>
+                            <form th:action="@{|/users/${user.id}|}" method="post">
+                                <input type="hidden" name="_method" value="delete">
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${pagePath})}"></div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

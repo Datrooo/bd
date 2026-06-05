@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card" th:object="${record}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Эксплуатация</div>
+                <h1 class="section-title mb-1" th:text="${pageTitle}">Новая эксплуатационная запись</h1>
+                <p class="section-description mb-0">Фиксация параметров рейса или служебного использования транспорта.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/transportation-records}">К списку</a>
+        </div>
+        <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+        </div>
+        <form th:action="@{${formAction}}" th:object="${record}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="col-md-4">
+                <label class="form-label" for="recordDate">Дата</label>
+                <input id="recordDate" th:field="*{recordDate}" type="date" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('recordDate')}" th:errors="*{recordDate}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="recordType">Тип записи</label>
+                <select id="recordType" th:field="*{recordType}" class="form-select" required>
+                    <option th:each="recordType : ${recordTypes}" th:value="${recordType}" th:text="${recordType}">PASSENGER</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('recordType')}" th:errors="*{recordType}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="tripCount">Количество рейсов</label>
+                <input id="tripCount" th:field="*{tripCount}" type="number" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('tripCount')}" th:errors="*{tripCount}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="vehicleId">Транспорт</label>
+                <select id="vehicleId" th:field="*{vehicleId}" class="form-select" required>
+                    <option value="">Выберите транспорт</option>
+                    <option th:each="vehicle : ${vehicles}" th:value="${vehicle.id}" th:text="${vehicle.label}">INV-001 / А111АА54</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('vehicleId')}" th:errors="*{vehicleId}"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="routeId">Маршрут</label>
+                <select id="routeId" th:field="*{routeId}" class="form-select">
+                    <option value="">Без маршрута</option>
+                    <option th:each="route : ${routes}" th:value="${route.id}" th:text="${route.label}">12 / Центр - вокзал</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="mileageKm">Пробег, км</label>
+                <input id="mileageKm" th:field="*{mileageKm}" type="number" step="0.01" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('mileageKm')}" th:errors="*{mileageKm}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="hoursUsed">Часы работы</label>
+                <input id="hoursUsed" th:field="*{hoursUsed}" type="number" step="0.01" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('hoursUsed')}" th:errors="*{hoursUsed}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="revenue">Выручка</label>
+                <input id="revenue" th:field="*{revenue}" type="number" step="0.01" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('revenue')}" th:errors="*{revenue}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="passengerCount">Пассажиры</label>
+                <input id="passengerCount" th:field="*{passengerCount}" type="number" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('passengerCount')}" th:errors="*{passengerCount}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="cargoWeightKg">Вес груза, кг</label>
+                <input id="cargoWeightKg" th:field="*{cargoWeightKg}" type="number" step="0.01" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('cargoWeightKg')}" th:errors="*{cargoWeightKg}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="cargoVolumeM3">Объем груза, м³</label>
+                <input id="cargoVolumeM3" th:field="*{cargoVolumeM3}" type="number" step="0.01" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('cargoVolumeM3')}" th:errors="*{cargoVolumeM3}"></div>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="description">Описание</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="notes">Примечания</label>
+                <textarea id="notes" th:field="*{notes}" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark" th:text="${submitLabel}">Сохранить</button>
+                <a class="btn btn-outline-dark" th:href="@{/transportation-records}">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

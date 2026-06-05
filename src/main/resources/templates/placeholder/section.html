@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${section.title})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="panel-card h-100">
+                <div class="eyebrow">Раздел проекта</div>
+                <h1 class="section-title mb-3" th:text="${section.title}">Транспорт</h1>
+                <p class="lead section-description" th:text="${section.description}">Описание раздела.</p>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">URL</span>
+                        <span class="detail-value" th:text="${section.path}">/vehicles</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Статус</span>
+                        <span class="detail-value" th:text="${section.currentStatus}">Каркас раздела готов</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Следующий этап</span>
+                        <span class="detail-value" th:text="${section.nextMilestone}">Этап 4</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Доступ</span>
+                        <span class="detail-value" th:text="${section.rolesLabel}">SUPERADMIN</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="panel-card h-100">
+                <div class="eyebrow">Что будет реализовано</div>
+                <h2 class="section-title h4">Ближайший срез</h2>
+                <ul class="planned-list">
+                    <li th:each="artifact : ${section.plannedArtifacts}" th:text="${artifact}">Планируемый артефакт.</li>
+                </ul>
+                <a class="btn btn-outline-dark" th:href="@{/dashboard}">Вернуться к обзору</a>
+            </section>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
+

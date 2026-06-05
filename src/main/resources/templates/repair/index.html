@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Ремонты')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Этап 4</div>
+                <h1 class="section-title mb-1">Ремонты</h1>
+                <p class="section-description mb-0">Типы ремонтов, журнал ремонтов и выполненные ремонтные работы.</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/repair-types}">
+                    <div class="card-body">
+                        <div class="module-tag">Справочник</div>
+                        <h2 class="module-title">Типы ремонтов</h2>
+                        <p class="module-copy">Набор категорий ремонтных работ.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/repairs-journal}">
+                    <div class="card-body">
+                        <div class="module-tag">Журнал</div>
+                        <h2 class="module-title">Ремонты</h2>
+                        <p class="module-copy">Карточки ремонтов по транспорту, статусам и подразделениям.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/repair-works}">
+                    <div class="card-body">
+                        <div class="module-tag">Работы</div>
+                        <h2 class="module-title">Ремонтные работы</h2>
+                        <p class="module-copy">Отдельные операции с количеством, стоимостью и исполнителями.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: auto-enterprise-postgres
+    environment:
+      POSTGRES_DB: auto_enterprise
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - auto-enterprise-postgres-data:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auto_enterprise"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+volumes:
+  auto-enterprise-postgres-data:

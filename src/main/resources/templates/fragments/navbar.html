@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="navbar" class="navbar navbar-expand-lg app-navbar sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex flex-column" th:href="@{/dashboard}">
+            <span class="brand-kicker">Auto Enterprise IS</span>
+            <span class="brand-title">Информационная система автопредприятия</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appNavbar" aria-controls="appNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div id="appNavbar" class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/dashboard}">Обзор</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/demo-scenario}">Демо-сценарий</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vehicles}">Транспорт</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/employees}">Персонал</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/organization}">Оргструктура</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/routes}">Маршруты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/reports}">Отчеты</a>
+                </li>
+                <li class="nav-item" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN)}">
+                    <a class="nav-link" th:href="@{/users}">Пользователи</a>
+                </li>
+                <li class="nav-item" th:if="${@roleAccess.has(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN)}">
+                    <a class="nav-link" th:href="@{/sql-console}">SQL-консоль</a>
+                </li>
+            </ul>
+
+            <div class="auth-pill ms-lg-3" sec:authorize="isAuthenticated()">
+                <div class="small text-uppercase auth-label">Текущий пользователь</div>
+                <div class="fw-semibold" th:text="${#authentication.name}">user</div>
+            </div>
+
+            <form class="ms-lg-3" th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn btn-sm btn-outline-light">Выйти</button>
+            </form>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

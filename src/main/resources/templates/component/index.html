@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Агрегаты')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Этап 4</div>
+                <h1 class="section-title mb-1">Агрегаты</h1>
+                <p class="section-description mb-0">Каталог агрегатов и история их установки, ремонта и снятия.</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/components-catalog}">
+                    <div class="card-body">
+                        <div class="module-tag">Каталог</div>
+                        <h2 class="module-title">Агрегаты</h2>
+                        <p class="module-copy">Серийные номера, статусы и базовые паспортные данные агрегатов.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/component-history}">
+                    <div class="card-body">
+                        <div class="module-tag">История</div>
+                        <h2 class="module-title">История агрегатов</h2>
+                        <p class="module-copy">Установка, снятие, замена и ремонт агрегатов на транспорте.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

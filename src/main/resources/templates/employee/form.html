@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card" th:object="${employee}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Персонал</div>
+                <h1 class="section-title mb-1" th:text="${pageTitle}">Новый сотрудник</h1>
+                <p class="section-description mb-0">Заполните основные кадровые данные.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/employees}">К списку</a>
+        </div>
+
+        <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+        </div>
+
+        <form th:action="@{${formAction}}" th:object="${employee}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="col-md-4">
+                <label class="form-label" for="personnelNumber">Табельный номер</label>
+                <input id="personnelNumber" th:field="*{personnelNumber}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('personnelNumber')}" th:errors="*{personnelNumber}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="lastName">Фамилия</label>
+                <input id="lastName" th:field="*{lastName}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="firstName">Имя</label>
+                <input id="firstName" th:field="*{firstName}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="middleName">Отчество</label>
+                <input id="middleName" th:field="*{middleName}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="position">Должность</label>
+                <input id="position" th:field="*{position}" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('position')}" th:errors="*{position}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="status">Статус</label>
+                <select id="status" th:field="*{status}" class="form-select" required>
+                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}">ACTIVE</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="birthDate">Дата рождения</label>
+                <input id="birthDate" th:field="*{birthDate}" type="date" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="hireDate">Дата приема</label>
+                <input id="hireDate" th:field="*{hireDate}" type="date" class="form-control" required>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('hireDate')}" th:errors="*{hireDate}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="dismissalDate">Дата увольнения</label>
+                <input id="dismissalDate" th:field="*{dismissalDate}" type="date" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="qualification">Квалификация</label>
+                <input id="qualification" th:field="*{qualification}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="phone">Телефон</label>
+                <input id="phone" th:field="*{phone}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="email">Email</label>
+                <input id="email" th:field="*{email}" class="form-control">
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="address">Адрес</label>
+                <textarea id="address" th:field="*{address}" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="notes">Примечания</label>
+                <textarea id="notes" th:field="*{notes}" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark" th:text="${submitLabel}">Создать</button>
+                <a class="btn btn-outline-dark" th:href="@{/employees}">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

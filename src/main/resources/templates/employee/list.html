@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Персонал')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <section class="panel-card">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+            <div>
+                <div class="eyebrow">CRUD</div>
+                <h1 class="section-title mb-1">Сотрудники</h1>
+                <p class="section-description mb-0">Кадровый список предприятия с базовым управлением карточками сотрудников.</p>
+            </div>
+            <a class="btn btn-dark" th:href="@{/employees/new}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).HR)}">Добавить сотрудника</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Табельный номер</th>
+                    <th>ФИО</th>
+                    <th>Должность</th>
+                    <th>Статус</th>
+                    <th>Дата приема</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${page.isEmpty()}">
+                    <td colspan="6" class="text-center text-muted py-4">Сотрудники пока не добавлены.</td>
+                </tr>
+                <tr th:each="employee : ${page.content}">
+                    <td th:text="${employee.personnelNumber}">EMP-001</td>
+                    <td th:text="${employee.fullName}">Иванов Иван Иванович</td>
+                    <td th:text="${employee.position}">DRIVER</td>
+                    <td><span class="badge text-bg-light border" th:text="${employee.status}">ACTIVE</span></td>
+                    <td th:text="${#temporals.format(employee.hireDate, 'dd.MM.yyyy')}">01.03.2015</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a class="btn btn-sm btn-outline-dark"
+                               th:href="@{|/employees/${employee.id}/edit|}"
+                               th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).HR)}">
+                                Изменить
+                            </a>
+                            <form th:action="@{|/employees/${employee.id}|}" method="post" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).HR)}">
+                                <input type="hidden" name="_method" value="delete">
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${pagePath})}"></div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

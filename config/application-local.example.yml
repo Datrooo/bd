@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/auto_enterprise
+    username: auto_enterprise_app
+    password: auto_enterprise_app
+  flyway:
+    enabled: true
+    locations: classpath:db/migration,classpath:db/local
+    user: postgres
+    password: postgres
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: never
+
+app:
+  reports:
+    max-rows: 500
+    timeout-seconds: 15
+  security:
+    show-dev-accounts: true
+  sql-console:
+    max-rows: 200
+    timeout-seconds: 10
+    datasource:
+      url: jdbc:postgresql://localhost:5433/auto_enterprise
+      username: auto_enterprise_sql_console
+      password: auto_enterprise_sql_console
+      driver-class-name: org.postgresql.Driver
+
+# Скопируйте этот файл в config/application-local.yml перед локальным запуском.
+# Этот конфиг включает demo-seed только для локальной среды разработки.
+# Локальные dev-учетки после этапа 3:
+# superadmin / superadmin
+# admin / admin
+# dispatcher / dispatcher
+# hr / hr
+# mechanic / mechanic
+# viewer / viewer

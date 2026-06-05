@@ -1,0 +1,3 @@
+ALTER TABLE role
+ADD CONSTRAINT chk_role_name_enum
+CHECK (name IN ('SUPERADMIN', 'ADMIN', 'DISPATCHER', 'HR', 'MECHANIC', 'VIEWER'));

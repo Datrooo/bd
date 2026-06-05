@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Назначения водителей')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+    <section class="panel-card">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+            <div>
+                <div class="eyebrow">Оргструктура</div>
+                <h1 class="section-title mb-1">Водители и транспорт</h1>
+                <p class="section-description mb-0">Закрепление водителей за машинами по типам назначений.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-outline-dark" th:href="@{/organization}">К модулю</a>
+                <a class="btn btn-dark" th:href="@{/vehicle-driver-assignments/new}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).DISPATCHER)}">Добавить назначение</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Транспорт</th>
+                    <th>Водитель</th>
+                    <th>Тип</th>
+                    <th>Начало</th>
+                    <th>Окончание</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${page.isEmpty()}">
+                    <td colspan="6" class="text-center text-muted py-4">Записей пока нет.</td>
+                </tr>
+                <tr th:each="assignment : ${page.content}">
+                    <td th:text="${assignment.vehicleLabel}">INV-001 / А111АА54</td>
+                    <td th:text="${assignment.driverName}">Иванов И.И.</td>
+                    <td th:text="${assignment.assignmentType}">PRIMARY</td>
+                    <td th:text="${assignment.startDate}">2026-04-28</td>
+                    <td th:text="${assignment.endDate ?: 'Без окончания'}">2026-05-10</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a class="btn btn-sm btn-outline-dark" th:href="@{|/vehicle-driver-assignments/${assignment.id}/edit|}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).DISPATCHER)}">Изменить</a>
+                            <form th:action="@{|/vehicle-driver-assignments/${assignment.id}|}" method="post" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).DISPATCHER)}">
+                                <input type="hidden" name="_method" value="delete">
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${pagePath})}"></div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

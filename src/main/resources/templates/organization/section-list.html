@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Участки')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+    <section class="panel-card">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+            <div>
+                <div class="eyebrow">Оргструктура</div>
+                <h1 class="section-title mb-1">Участки</h1>
+                <p class="section-description mb-0">Участки внутри цехов и их мастера.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-outline-dark" th:href="@{/organization}">К модулю</a>
+                <a class="btn btn-dark" th:href="@{/organization-sections/new}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN)}">Добавить участок</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Участок</th>
+                    <th>Цех</th>
+                    <th>Мастер</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${page.isEmpty()}">
+                    <td colspan="4" class="text-center text-muted py-4">Записей пока нет.</td>
+                </tr>
+                <tr th:each="section : ${page.content}">
+                    <td th:text="${section.name}">Участок №1</td>
+                    <td th:text="${section.workshopName}">Транспортный цех</td>
+                    <td th:text="${section.masterEmployeeName ?: 'Не назначен'}">Петров П.П.</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a class="btn btn-sm btn-outline-dark" th:href="@{|/organization-sections/${section.id}/edit|}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).HR)}">Изменить</a>
+                            <form th:action="@{|/organization-sections/${section.id}|}" method="post" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN)}">
+                                <input type="hidden" name="_method" value="delete">
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${pagePath})}"></div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

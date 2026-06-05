@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Ремонтные работы')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+    <section class="panel-card">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+            <div>
+                <div class="eyebrow">Ремонты</div>
+                <h1 class="section-title mb-1">Ремонтные работы</h1>
+                <p class="section-description mb-0">Список работ внутри ремонтов с исполнителями, количеством и стоимостью.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-outline-dark" th:href="@{/repairs}">К модулю</a>
+                <a class="btn btn-dark" th:href="@{/repair-works/new}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).MECHANIC)}">Добавить работу</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>Ремонт</th>
+                    <th>Исполнитель</th>
+                    <th>Тип работы</th>
+                    <th>Количество</th>
+                    <th>Стоимость</th>
+                    <th>Завершено</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${page.isEmpty()}">
+                    <td colspan="7" class="text-center text-muted py-4">Записей пока нет.</td>
+                </tr>
+                <tr th:each="repairWork : ${page.content}">
+                    <td th:text="${repairWork.repairLabel}">#1 / INV-001</td>
+                    <td th:text="${repairWork.employeeName ?: 'Не назначен'}">Иванов И.И.</td>
+                    <td th:text="${repairWork.workType}">Замена масла</td>
+                    <td th:text="${#numbers.formatDecimal(repairWork.quantity, 1, 'COMMA', 2, 'POINT')}">2,00</td>
+                    <td th:text="${#numbers.formatDecimal(repairWork.cost, 1, 'COMMA', 2, 'POINT')}">5000,00</td>
+                    <td th:text="${repairWork.completedAt ?: 'Не указано'}">2026-04-28T12:00</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end flex-wrap">
+                            <a class="btn btn-sm btn-outline-dark" th:href="@{|/repair-works/${repairWork.id}/edit|}" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).MECHANIC)}">Изменить</a>
+                            <form th:action="@{|/repair-works/${repairWork.id}|}" method="post" th:if="${@roleAccess.hasAny(#authentication, T(ru.autoenterprise.security.AppRole).SUPERADMIN, T(ru.autoenterprise.security.AppRole).ADMIN, T(ru.autoenterprise.security.AppRole).MECHANIC)}">
+                                <input type="hidden" name="_method" value="delete">
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{fragments/pagination :: pagination(${page}, ${pagePath})}"></div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

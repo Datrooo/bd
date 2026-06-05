@@ -1,0 +1,275 @@
+Project auto_enterprise_db_compact_final {
+  database_type: "PostgreSQL"
+  Note: '''
+  Финальная компактная ER-модель информационной системы автопредприятия города.
+  Упрощенная версия для курсового проекта.
+  '''
+}
+
+Table vehicle_category {
+  id bigint [pk, increment]
+  name varchar(100) [not null, unique]
+  description text
+}
+
+Table vehicle {
+  id bigint [pk, increment]
+  inventory_number varchar(50) [not null, unique]
+  registration_number varchar(20) [not null, unique]
+  vin varchar(50) [unique]
+  category_id bigint [not null, ref: > vehicle_category.id]
+  brand_name varchar(100) [not null]
+  model_name varchar(100) [not null]
+  manufacture_year int
+  purchase_date date
+  commissioning_date date
+  current_mileage numeric(12,2) [not null, default: 0]
+  status varchar(50) [not null]
+  passenger_capacity int
+  load_capacity_kg numeric(12,2)
+  cargo_volume_m3 numeric(12,2)
+  body_type varchar(100)
+  taxi_license_number varchar(100)
+  service_purpose varchar(200)
+  color varchar(50)
+  engine_number varchar(50)
+  chassis_number varchar(50)
+  notes text
+}
+
+Table vehicle_acquisition {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  acquisition_date date [not null]
+  acquisition_type varchar(50) [not null]
+  supplier_name varchar(150)
+  document_number varchar(100)
+  cost numeric(14,2)
+  notes text
+}
+
+Table vehicle_disposal {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  disposal_date date [not null]
+  disposal_type varchar(50) [not null]
+  reason text
+  document_number varchar(100)
+  amount_received numeric(14,2)
+  notes text
+}
+
+Table employee {
+  id bigint [pk, increment]
+  personnel_number varchar(50) [not null, unique]
+  last_name varchar(100) [not null]
+  first_name varchar(100) [not null]
+  middle_name varchar(100)
+  birth_date date
+  hire_date date [not null]
+  dismissal_date date
+  position varchar(100) [not null]
+  qualification varchar(200)
+  phone varchar(30)
+  email varchar(150)
+  address text
+  status varchar(50) [not null]
+  notes text
+}
+
+Table workshop {
+  id bigint [pk, increment]
+  name varchar(150) [not null, unique]
+  chief_employee_id bigint [ref: > employee.id]
+  description text
+}
+
+Table section {
+  id bigint [pk, increment]
+  workshop_id bigint [not null, ref: > workshop.id]
+  name varchar(150) [not null]
+  master_employee_id bigint [ref: > employee.id]
+  description text
+
+  indexes {
+    (workshop_id, name) [unique]
+  }
+}
+
+Table brigade {
+  id bigint [pk, increment]
+  section_id bigint [not null, ref: > section.id]
+  name varchar(150) [not null]
+  brigadier_employee_id bigint [ref: > employee.id]
+  description text
+
+  indexes {
+    (section_id, name) [unique]
+  }
+}
+
+Table employee_brigade_assignment {
+  id bigint [pk, increment]
+  employee_id bigint [not null, ref: > employee.id]
+  brigade_id bigint [not null, ref: > brigade.id]
+  start_date date [not null]
+  end_date date
+  is_primary boolean [not null, default: true]
+}
+
+Table vehicle_driver_assignment {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  driver_employee_id bigint [not null, ref: > employee.id]
+  start_date date [not null]
+  end_date date
+  assignment_type varchar(50) [not null]
+  notes text
+}
+
+Table garage_object {
+  id bigint [pk, increment]
+  name varchar(150) [not null]
+  object_type varchar(50) [not null]
+  parent_object_id bigint [ref: > garage_object.id]
+  workshop_id bigint [ref: > workshop.id]
+  section_id bigint [ref: > section.id]
+  address varchar(255)
+  capacity int
+  description text
+}
+
+Table vehicle_location_history {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  garage_object_id bigint [not null, ref: > garage_object.id]
+  start_date date [not null]
+  end_date date
+  notes text
+}
+
+Table route {
+  id bigint [pk, increment]
+  route_number varchar(20) [not null]
+  name varchar(150) [not null]
+  route_type varchar(50) [not null]
+  start_point varchar(150) [not null]
+  end_point varchar(150) [not null]
+  length_km numeric(10,2)
+  is_active boolean [not null, default: true]
+  notes text
+
+  indexes {
+    (route_number, route_type) [unique]
+  }
+}
+
+Table route_vehicle_assignment {
+  id bigint [pk, increment]
+  route_id bigint [not null, ref: > route.id]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  start_date date [not null]
+  end_date date
+  shift_info varchar(100)
+  notes text
+}
+
+Table transportation_record {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  route_id bigint [ref: > route.id]
+  record_type varchar(50) [not null]
+  record_date date [not null]
+  mileage_km numeric(12,2) [not null, default: 0]
+  hours_used numeric(10,2)
+  passenger_count int
+  cargo_weight_kg numeric(12,2)
+  cargo_volume_m3 numeric(12,2)
+  trip_count int [not null, default: 1]
+  revenue numeric(14,2)
+  description text
+  notes text
+}
+
+Table repair_type {
+  id bigint [pk, increment]
+  name varchar(100) [not null, unique]
+  description text
+}
+
+Table repair {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  repair_type_id bigint [not null, ref: > repair_type.id]
+  workshop_id bigint [ref: > workshop.id]
+  section_id bigint [ref: > section.id]
+  brigade_id bigint [ref: > brigade.id]
+  start_date date [not null]
+  end_date date
+  reason text
+  description text
+  total_cost numeric(14,2) [not null, default: 0]
+  status varchar(50) [not null]
+  notes text
+}
+
+Table repair_work {
+  id bigint [pk, increment]
+  repair_id bigint [not null, ref: > repair.id]
+  employee_id bigint [ref: > employee.id]
+  work_type varchar(150) [not null]
+  description text
+  quantity numeric(12,2) [not null, default: 1]
+  cost numeric(14,2) [not null, default: 0]
+  completed_at timestamp
+  notes text
+}
+
+Table component {
+  id bigint [pk, increment]
+  component_type varchar(100) [not null]
+  serial_number varchar(100) [not null, unique]
+  model varchar(100)
+  manufacturer varchar(100)
+  production_date date
+  purchase_date date
+  status varchar(50) [not null]
+  notes text
+}
+
+Table vehicle_component_history {
+  id bigint [pk, increment]
+  vehicle_id bigint [not null, ref: > vehicle.id]
+  component_id bigint [not null, ref: > component.id]
+  repair_id bigint [ref: > repair.id]
+  action_type varchar(50) [not null]
+  action_date date [not null]
+  cost numeric(14,2) [not null, default: 0]
+  notes text
+}
+
+Table role {
+  id bigint [pk, increment]
+  name varchar(50) [not null, unique]
+  description text
+}
+
+Table app_user {
+  id bigint [pk, increment]
+  username varchar(100) [not null, unique]
+  password_hash varchar(255) [not null]
+  employee_id bigint [ref: > employee.id]
+  is_active boolean [not null, default: true]
+  created_at timestamp [not null]
+  last_login_at timestamp
+}
+
+Table user_role {
+  id bigint [pk, increment]
+  user_id bigint [not null, ref: > app_user.id]
+  role_id bigint [not null, ref: > role.id]
+
+  indexes {
+    (user_id, role_id) [unique]
+  }
+}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="pagination(page, pagePath)" th:if="${page.totalPages > 1}" aria-label="Навигация по страницам">
+    <ul class="pagination">
+        <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+            <a class="page-link" th:href="@{${pagePath}(page=${page.number - 1})}">Назад</a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link" th:text="|Страница ${page.number + 1} из ${page.totalPages}|">Страница 1 из 1</span>
+        </li>
+        <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+            <a class="page-link" th:href="@{${pagePath}(page=${page.number + 1})}">Вперед</a>
+        </li>
+    </ul>
+</nav>
+</body>
+</html>

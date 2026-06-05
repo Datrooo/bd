@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
+            <div>
+                <div class="eyebrow" th:text="${appStageCurrent}">Этап 7</div>
+                <h1 class="section-title mb-1">SQL-консоль</h1>
+                <p class="section-description mb-0">Изолированный технический раздел только для `SUPERADMIN`. Консоль выполняет только read-only `SELECT`/`WITH` запросы к прикладной PostgreSQL-схеме через отдельного ограниченного DB-пользователя.</p>
+            </div>
+            <div class="module-tag">SELECT/WITH only</div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="panel-card">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+                    <div>
+                        <div class="eyebrow">Выполнение запроса</div>
+                        <h2 class="section-title mb-1">SQL editor</h2>
+                        <p class="section-description mb-0">Разрешен один statement. Модифицирующие, DDL и административные команды отклоняются до выполнения.</p>
+                    </div>
+                </div>
+
+                <form th:action="@{/sql-console}" th:object="${sqlConsole}" method="post" class="row g-4">
+                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div class="col-12">
+                        <div class="alert alert-danger mb-0" th:if="${#fields.hasGlobalErrors()}">
+                            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="sql">SQL</label>
+                        <textarea
+                            id="sql"
+                            th:field="*{sql}"
+                            class="form-control sql-console-editor"
+                            rows="12"
+                            placeholder="SELECT id, username, is_active FROM app_user ORDER BY id;"></textarea>
+                        <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('sql')}" th:errors="*{sql}"></div>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-dark">Выполнить запрос</button>
+                        <a class="btn btn-outline-dark" th:href="@{/sql-console}">Очистить</a>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="panel-card h-100">
+                <div class="eyebrow">Политика безопасности</div>
+                <h2 class="section-title h4">Ограничения консоли</h2>
+                <ul class="planned-list sql-console-policy">
+                    <li>Только `SUPERADMIN`.</li>
+                    <li>Только один `SELECT` или `WITH` statement.</li>
+                    <li>Только прикладные таблицы и безопасные SQL-функции.</li>
+                    <li>Системные namespace PostgreSQL недоступны.</li>
+                    <li>Лимит результата: 200 строк.</li>
+                    <li>Таймаут выполнения: 10 секунд.</li>
+                    <li>Соединение открывается в `readOnly` режиме под отдельным DB-user.</li>
+                    <li>Попытки выполнить запрещенные команды логируются.</li>
+                </ul>
+
+                <div class="sql-console-example">
+                    <div class="meta-label mb-2">Пример</div>
+                    <pre class="sql-console-sample mb-0">SELECT id, username, is_active
+FROM app_user
+ORDER BY id;</pre>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <section class="panel-card mt-4" th:if="${executionResult != null}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Результат</div>
+                <h2 class="section-title mb-1">Табличный вывод</h2>
+                <p class="section-description mb-0" th:text="|Строк: ${executionResult.rowCount}, время: ${executionResult.executionTimeMs} мс|">Строк: 0, время: 0 мс</p>
+            </div>
+            <div class="module-tag" th:if="${executionResult.truncated}">Показаны первые 200 строк</div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th th:each="column : ${executionResult.columns}" th:text="${column}">column_name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${executionResult.isEmpty}">
+                    <td th:attr="colspan=${#lists.size(executionResult.columns)}" class="text-center text-muted py-4">Запрос выполнен, но строк не найдено.</td>
+                </tr>
+                <tr th:each="row : ${executionResult.rows}">
+                    <td th:each="cell : ${row}" th:text="${cell}">value</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

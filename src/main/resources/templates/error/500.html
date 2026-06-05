@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Ошибка приложения')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<main class="container py-5">
+    <section class="panel-card narrow-card mx-auto text-center">
+        <div class="eyebrow">500</div>
+        <h1 class="section-title">Внутренняя ошибка приложения</h1>
+        <p class="section-description">
+            Приложение не смогло обработать запрос. База данных и миграции не затронуты, но текущую операцию нужно повторить позже или проверить входные данные.
+        </p>
+        <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
+            <a class="btn btn-dark" th:href="@{/dashboard}">Вернуться на обзор</a>
+            <a class="btn btn-outline-dark" th:href="@{/reports}">Открыть отчеты</a>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

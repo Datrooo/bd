@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Оргструктура')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Этап 4</div>
+                <h1 class="section-title mb-1">Персонал и оргструктура</h1>
+                <p class="section-description mb-0">Управление цехами, участками, бригадами и назначениями сотрудников и водителей.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6 col-xl-4">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/workshops}">
+                    <div class="card-body">
+                        <div class="module-tag">CRUD</div>
+                        <h2 class="module-title">Цеха</h2>
+                        <p class="module-copy">Справочник производственных цехов и ответственных сотрудников.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-4">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/organization-sections}">
+                    <div class="card-body">
+                        <div class="module-tag">CRUD</div>
+                        <h2 class="module-title">Участки</h2>
+                        <p class="module-copy">Привязка участков к цехам и мастерам.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-4">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/brigades}">
+                    <div class="card-body">
+                        <div class="module-tag">CRUD</div>
+                        <h2 class="module-title">Бригады</h2>
+                        <p class="module-copy">Бригадная структура внутри участков.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/employee-brigade-assignments}">
+                    <div class="card-body">
+                        <div class="module-tag">Назначения</div>
+                        <h2 class="module-title">Сотрудники в бригадах</h2>
+                        <p class="module-copy">История закрепления сотрудников за бригадами и флаг основного назначения.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <a class="card module-card h-100 text-decoration-none" th:href="@{/vehicle-driver-assignments}">
+                    <div class="card-body">
+                        <div class="module-tag">Назначения</div>
+                        <h2 class="module-title">Водители и транспорт</h2>
+                        <p class="module-copy">Закрепление водителей за машинами по типам смен и ролям.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

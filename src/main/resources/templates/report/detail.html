@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="container py-5">
+    <section class="panel-card mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
+            <div>
+                <div class="eyebrow">Отчет <span th:text="${#strings.toUpperCase(report.code)}">R01</span></div>
+                <h1 class="section-title mb-1" th:text="${report.title}">Данные об автопарке предприятия</h1>
+                <p class="section-description mb-2" th:text="${report.description}">Описание отчета.</p>
+                <div class="module-meta">
+                    <div><span class="meta-label">Группа:</span> <span th:text="${report.groupTitle}">Автопарк и водители</span></div>
+                    <div><span class="meta-label">Параметры:</span> <span th:text="${report.parameterSummary}">Без параметров</span></div>
+                </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-outline-dark" th:href="@{/reports}">К каталогу</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel-card mb-4" th:if="${report.requiresParameters}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Параметры</div>
+                <h2 class="section-title mb-1">Фильтры выполнения</h2>
+                <p class="section-description mb-0">Заполните только те параметры, которые используются в SQL этого отчета.</p>
+            </div>
+        </div>
+
+        <form th:action="@{|/reports/${report.code}|}" th:object="${request}" method="post" class="row g-4">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="col-12">
+                <div class="alert alert-danger mb-0" th:if="${#fields.hasGlobalErrors()}">
+                    <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Ошибка.</div>
+                </div>
+            </div>
+
+            <div class="col-md-6" th:if="${report.requiresVehicle}">
+                <label class="form-label" for="vehicleId">Транспорт</label>
+                <select id="vehicleId" th:field="*{vehicleId}" class="form-select">
+                    <option value="">Выберите транспорт</option>
+                    <option th:each="vehicle : ${vehicles}" th:value="${vehicle.value}" th:text="${vehicle.label}">INV-001 / А111АА77</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('vehicleId')}" th:errors="*{vehicleId}"></div>
+            </div>
+
+            <div class="col-md-6" th:if="${report.requiresEmployee}">
+                <label class="form-label" for="employeeId">Сотрудник</label>
+                <select id="employeeId" th:field="*{employeeId}" class="form-select">
+                    <option value="">Выберите сотрудника</option>
+                    <option th:each="employee : ${employees}" th:value="${employee.value}" th:text="${employee.label}">Иванов Иван Иванович</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('employeeId')}" th:errors="*{employeeId}"></div>
+            </div>
+
+            <div class="col-md-6" th:if="${report.requiresCategory}">
+                <label class="form-label" for="categoryName">Категория транспорта</label>
+                <select id="categoryName" th:field="*{categoryName}" class="form-select">
+                    <option value="">Выберите категорию</option>
+                    <option th:each="category : ${categories}" th:value="${category.value}" th:text="${category.label}">BUS</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}"></div>
+            </div>
+
+            <div class="col-md-6" th:if="${report.requiresBrand}">
+                <label class="form-label" for="brandName">Марка транспорта</label>
+                <select id="brandName" th:field="*{brandName}" class="form-select">
+                    <option value="">Выберите марку</option>
+                    <option th:each="brand : ${brands}" th:value="${brand.value}" th:text="${brand.label}">ЛиАЗ</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('brandName')}" th:errors="*{brandName}"></div>
+            </div>
+
+            <div class="col-md-6" th:if="${report.requiresDateRange}">
+                <label class="form-label" for="startDate">Дата начала</label>
+                <input id="startDate" th:field="*{startDate}" type="date" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+            </div>
+
+            <div class="col-md-6" th:if="${report.requiresDateRange}">
+                <label class="form-label" for="endDate">Дата окончания</label>
+                <input id="endDate" th:field="*{endDate}" type="date" class="form-control">
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-dark">Сформировать отчет</button>
+                <a class="btn btn-outline-dark" th:href="@{|/reports/${report.code}|}">Сбросить</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel-card mb-4" th:if="${!report.requiresParameters}">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+                <div class="eyebrow">Автовыполнение</div>
+                <h2 class="section-title mb-1">Отчет без параметров</h2>
+                <p class="section-description mb-0">Этот отчет выполняется сразу при открытии страницы, потому что SQL не требует входных параметров.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{|/reports/${report.code}|}">Обновить</a>
+        </div>
+    </section>
+
+    <div class="alert alert-danger" th:if="${errorMessage != null}" th:text="${errorMessage}">
+        Не удалось выполнить SQL-отчет.
+    </div>
+
+    <section class="panel-card" th:if="${tableResult != null}">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <div class="eyebrow">Результат</div>
+                <h2 class="section-title mb-1">Табличный вывод</h2>
+                <p class="section-description mb-0" th:text="|Строк в результате: ${tableResult.rowCount}|">Строк в результате: 0</p>
+            </div>
+            <div class="module-tag" th:if="${tableResult.truncated}">Показаны первые строки из ограниченного результата</div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th th:each="column : ${tableResult.columns}" th:text="${column}">column_name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${tableResult.isEmpty}">
+                    <td th:attr="colspan=${#lists.size(tableResult.columns)}" class="text-center text-muted py-4">По заданным параметрам строки не найдены.</td>
+                </tr>
+                <tr th:each="row : ${tableResult.rows}">
+                    <td th:each="cell : ${row}" th:text="${cell}">value</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>
