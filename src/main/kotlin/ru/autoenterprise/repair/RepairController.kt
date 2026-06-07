@@ -3,7 +3,7 @@ package ru.autoenterprise.repair
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
 import java.time.LocalDate
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -65,7 +65,7 @@ class RepairTypeController(
             repairTypeService.createType(form)
             redirectAttributes.addFlashAttribute("successMessage", "Тип ремонта добавлен.")
             "redirect:/repair-types"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("repairType.save", "Не удалось сохранить тип ремонта. Название должно быть уникальным.")
             populateForm(model, form, true)
             "repair/type-form"
@@ -105,7 +105,7 @@ class RepairTypeController(
             bindingResult.reject("repairType.update", "Тип ремонта не найден.")
             populateForm(model, form.copy(id = id), false)
             "repair/type-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("repairType.update", "Не удалось обновить тип ремонта. Название должно быть уникальным.")
             populateForm(model, form.copy(id = id), false)
             "repair/type-form"
@@ -119,7 +119,7 @@ class RepairTypeController(
             repairTypeService.deleteType(id)
             redirectAttributes.addFlashAttribute("successMessage", "Тип ремонта удален.")
             "redirect:/repair-types"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить тип ремонта, если на него ссылаются ремонты.")
             "redirect:/repair-types"
         }
@@ -178,7 +178,7 @@ class RepairJournalController(
             bindingResult.reject("repair.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "repair/repair-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("repair.save", "Не удалось сохранить ремонт.")
             populateForm(model, form, true)
             "repair/repair-form"
@@ -218,7 +218,7 @@ class RepairJournalController(
             bindingResult.reject("repair.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "repair/repair-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("repair.update", "Не удалось обновить ремонт.")
             populateForm(model, form.copy(id = id), false)
             "repair/repair-form"
@@ -232,7 +232,7 @@ class RepairJournalController(
             repairService.deleteRepair(id)
             redirectAttributes.addFlashAttribute("successMessage", "Ремонт удален.")
             "redirect:/repairs-journal"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить ремонт, если на него ссылаются работы или история агрегатов.")
             "redirect:/repairs-journal"
         }
@@ -294,7 +294,7 @@ class RepairWorkController(
             bindingResult.reject("repairWork.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "repair/work-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("repairWork.save", "Не удалось сохранить ремонтную работу.")
             populateForm(model, form, true)
             "repair/work-form"
@@ -334,7 +334,7 @@ class RepairWorkController(
             bindingResult.reject("repairWork.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "repair/work-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("repairWork.update", "Не удалось обновить ремонтную работу.")
             populateForm(model, form.copy(id = id), false)
             "repair/work-form"
@@ -348,7 +348,7 @@ class RepairWorkController(
             repairWorkService.deleteWork(id)
             redirectAttributes.addFlashAttribute("successMessage", "Ремонтная работа удалена.")
             "redirect:/repair-works"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить ремонтную работу.")
             "redirect:/repair-works"
         }

@@ -3,7 +3,7 @@ package ru.autoenterprise.organization
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
 import java.time.LocalDate
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -64,7 +64,7 @@ class WorkshopController(
             workshopService.createWorkshop(form)
             redirectAttributes.addFlashAttribute("successMessage", "Цех добавлен.")
             "redirect:/workshops"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("workshop.save", "Не удалось сохранить цех. Проверьте уникальность названия.")
             populateForm(model, form, true)
             "organization/workshop-form"
@@ -104,7 +104,7 @@ class WorkshopController(
             bindingResult.reject("workshop.update", "Цех не найден.")
             populateForm(model, form.copy(id = id), false)
             "organization/workshop-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("workshop.update", "Не удалось обновить цех. Проверьте уникальность названия.")
             populateForm(model, form.copy(id = id), false)
             "organization/workshop-form"
@@ -118,7 +118,7 @@ class WorkshopController(
             workshopService.deleteWorkshop(id)
             redirectAttributes.addFlashAttribute("successMessage", "Цех удален.")
             "redirect:/workshops"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить цех, если на него есть ссылки в участках, гаражах или ремонтах.")
             "redirect:/workshops"
         }
@@ -175,7 +175,7 @@ class OrganizationSectionController(
             bindingResult.reject("section.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/section-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("section.save", "Не удалось сохранить участок. Проверьте уникальность в рамках цеха.")
             populateForm(model, form, true)
             "organization/section-form"
@@ -215,7 +215,7 @@ class OrganizationSectionController(
             bindingResult.reject("section.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/section-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("section.update", "Не удалось обновить участок. Проверьте уникальность в рамках цеха.")
             populateForm(model, form.copy(id = id), false)
             "organization/section-form"
@@ -229,7 +229,7 @@ class OrganizationSectionController(
             sectionService.deleteSection(id)
             redirectAttributes.addFlashAttribute("successMessage", "Участок удален.")
             "redirect:/organization-sections"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить участок, если на него есть ссылки в бригадах, гаражах или ремонтах.")
             "redirect:/organization-sections"
         }
@@ -287,7 +287,7 @@ class BrigadeController(
             bindingResult.reject("brigade.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/brigade-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("brigade.save", "Не удалось сохранить бригаду. Проверьте уникальность в рамках участка.")
             populateForm(model, form, true)
             "organization/brigade-form"
@@ -327,7 +327,7 @@ class BrigadeController(
             bindingResult.reject("brigade.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/brigade-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("brigade.update", "Не удалось обновить бригаду. Проверьте уникальность в рамках участка.")
             populateForm(model, form.copy(id = id), false)
             "organization/brigade-form"
@@ -341,7 +341,7 @@ class BrigadeController(
             brigadeService.deleteBrigade(id)
             redirectAttributes.addFlashAttribute("successMessage", "Бригада удалена.")
             "redirect:/brigades"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить бригаду, если на нее есть ссылки в назначениях или ремонтах.")
             "redirect:/brigades"
         }
@@ -399,7 +399,7 @@ class EmployeeBrigadeAssignmentController(
             bindingResult.reject("employeeBrigadeAssignment.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/employee-brigade-assignment-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("employeeBrigadeAssignment.save", "Не удалось сохранить назначение сотрудника в бригаду.")
             populateForm(model, form, true)
             "organization/employee-brigade-assignment-form"
@@ -439,7 +439,7 @@ class EmployeeBrigadeAssignmentController(
             bindingResult.reject("employeeBrigadeAssignment.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/employee-brigade-assignment-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("employeeBrigadeAssignment.update", "Не удалось обновить назначение сотрудника в бригаду.")
             populateForm(model, form.copy(id = id), false)
             "organization/employee-brigade-assignment-form"
@@ -453,7 +453,7 @@ class EmployeeBrigadeAssignmentController(
             assignmentService.deleteAssignment(id)
             redirectAttributes.addFlashAttribute("successMessage", "Назначение сотрудника в бригаду удалено.")
             "redirect:/employee-brigade-assignments"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить назначение сотрудника в бригаду.")
             "redirect:/employee-brigade-assignments"
         }
@@ -514,7 +514,7 @@ class VehicleDriverAssignmentController(
             bindingResult.reject("vehicleDriverAssignment.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/vehicle-driver-assignment-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("vehicleDriverAssignment.save", "Не удалось сохранить назначение водителя.")
             populateForm(model, form, true)
             "organization/vehicle-driver-assignment-form"
@@ -554,7 +554,7 @@ class VehicleDriverAssignmentController(
             bindingResult.reject("vehicleDriverAssignment.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/vehicle-driver-assignment-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("vehicleDriverAssignment.update", "Не удалось обновить назначение водителя.")
             populateForm(model, form.copy(id = id), false)
             "organization/vehicle-driver-assignment-form"
@@ -568,7 +568,7 @@ class VehicleDriverAssignmentController(
             assignmentService.deleteAssignment(id)
             redirectAttributes.addFlashAttribute("successMessage", "Назначение водителя удалено.")
             "redirect:/vehicle-driver-assignments"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить назначение водителя.")
             "redirect:/vehicle-driver-assignments"
         }

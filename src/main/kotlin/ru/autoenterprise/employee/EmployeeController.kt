@@ -2,7 +2,7 @@ package ru.autoenterprise.employee
 
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -54,7 +54,7 @@ class EmployeeController(
             employeeService.createEmployee(form)
             redirectAttributes.addFlashAttribute("successMessage", "Сотрудник добавлен.")
             "redirect:/employees"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("employee.save", "Не удалось сохранить сотрудника. Проверьте табельный номер и даты.")
             populateForm(model, form, true)
             "employee/form"
@@ -98,7 +98,7 @@ class EmployeeController(
             bindingResult.reject("employee.update", "Сотрудник не найден.")
             populateForm(model, form.copy(id = id), false)
             "employee/form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("employee.update", "Не удалось обновить сотрудника. Проверьте табельный номер и даты.")
             populateForm(model, form.copy(id = id), false)
             "employee/form"
@@ -115,7 +115,7 @@ class EmployeeController(
             employeeService.deleteEmployee(id)
             redirectAttributes.addFlashAttribute("successMessage", "Сотрудник удален.")
             "redirect:/employees"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить сотрудника, если на него есть ссылки в других разделах.")
             "redirect:/employees"
         }

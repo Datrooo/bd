@@ -3,7 +3,7 @@ package ru.autoenterprise.user
 import ru.autoenterprise.employee.EmployeeService
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Controller
@@ -63,7 +63,7 @@ class UserController(
             bindingResult.reject("user.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "user/form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("user.save", "Не удалось сохранить пользователя. Логин должен быть уникальным.")
             populateForm(model, form, true)
             "user/form"
@@ -112,7 +112,7 @@ class UserController(
             bindingResult.reject("user.update", ex.message ?: "Не удалось обновить пользователя.")
             populateForm(model, form, false, formActionId = id)
             "user/form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("user.update", "Не удалось обновить пользователя. Логин должен быть уникальным.")
             populateForm(model, form, false, formActionId = id)
             "user/form"
@@ -133,7 +133,7 @@ class UserController(
         } catch (ex: IllegalStateException) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.message)
             "redirect:/users"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить пользователя из-за связанных записей.")
             "redirect:/users"
         }

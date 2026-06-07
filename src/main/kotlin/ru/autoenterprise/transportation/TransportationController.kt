@@ -3,7 +3,7 @@ package ru.autoenterprise.transportation
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
 import java.time.LocalDate
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import ru.autoenterprise.domain.TransportationRecordType
 import ru.autoenterprise.route.RouteService
 import ru.autoenterprise.vehicle.VehicleService
 
@@ -69,7 +70,7 @@ class RouteVehicleAssignmentController(
             bindingResult.reject("routeVehicleAssignment.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "transportation/route-assignment-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("routeVehicleAssignment.save", "Не удалось сохранить закрепление транспорта за маршрутом.")
             populateForm(model, form, true)
             "transportation/route-assignment-form"
@@ -109,7 +110,7 @@ class RouteVehicleAssignmentController(
             bindingResult.reject("routeVehicleAssignment.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "transportation/route-assignment-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("routeVehicleAssignment.update", "Не удалось обновить закрепление транспорта за маршрутом.")
             populateForm(model, form.copy(id = id), false)
             "transportation/route-assignment-form"
@@ -123,7 +124,7 @@ class RouteVehicleAssignmentController(
             routeVehicleAssignmentService.deleteAssignment(id)
             redirectAttributes.addFlashAttribute("successMessage", "Закрепление транспорта за маршрутом удалено.")
             "redirect:/route-vehicle-assignments"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить закрепление транспорта за маршрутом.")
             "redirect:/route-vehicle-assignments"
         }
@@ -168,6 +169,8 @@ class TransportationRecordController(
         model: Model,
         redirectAttributes: RedirectAttributes,
     ): String {
+        validateRecord(form, bindingResult)
+
         if (bindingResult.hasErrors()) {
             populateForm(model, form, true)
             return "transportation/record-form"
@@ -181,8 +184,8 @@ class TransportationRecordController(
             bindingResult.reject("transportationRecord.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "transportation/record-form"
-        } catch (_: DataIntegrityViolationException) {
-            bindingResult.reject("transportationRecord.save", "Не удалось сохранить эксплуатационную запись. Проверьте тип записи и заполненные поля.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject("transportationRecord.save", transportationRecordErrorMessage(ex))
             populateForm(model, form, true)
             "transportation/record-form"
         }
@@ -208,6 +211,8 @@ class TransportationRecordController(
         model: Model,
         redirectAttributes: RedirectAttributes,
     ): String {
+        validateRecord(form, bindingResult)
+
         if (bindingResult.hasErrors()) {
             populateForm(model, form.copy(id = id), false)
             return "transportation/record-form"
@@ -221,8 +226,8 @@ class TransportationRecordController(
             bindingResult.reject("transportationRecord.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "transportation/record-form"
-        } catch (_: DataIntegrityViolationException) {
-            bindingResult.reject("transportationRecord.update", "Не удалось обновить эксплуатационную запись. Проверьте тип записи и заполненные поля.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject("transportationRecord.update", transportationRecordErrorMessage(ex))
             populateForm(model, form.copy(id = id), false)
             "transportation/record-form"
         }
@@ -235,7 +240,7 @@ class TransportationRecordController(
             transportationRecordService.deleteRecord(id)
             redirectAttributes.addFlashAttribute("successMessage", "Эксплуатационная запись удалена.")
             "redirect:/transportation-records"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить эксплуатационную запись.")
             "redirect:/transportation-records"
         }
@@ -248,5 +253,49 @@ class TransportationRecordController(
         model.addAttribute("pageTitle", if (creating) "Новая эксплуатационная запись" else "Редактирование эксплуатационной записи")
         model.addAttribute("submitLabel", if (creating) "Создать" else "Сохранить")
         model.addAttribute("formAction", if (creating) "/transportation-records" else "/transportation-records/${form.id}")
+    }
+
+    private fun validateRecord(form: TransportationRecordForm, bindingResult: BindingResult) {
+        when (form.recordType) {
+            TransportationRecordType.PASSENGER -> {
+                if (form.routeId == null) {
+                    bindingResult.rejectValue("routeId", "required", "Для пассажирской поездки выберите маршрут.")
+                }
+                if (form.passengerCount == null) {
+                    bindingResult.rejectValue("passengerCount", "required", "Для пассажирской поездки укажите число пассажиров.")
+                }
+            }
+
+            TransportationRecordType.CARGO -> {
+                if (form.cargoWeightKg == null && form.cargoVolumeM3 == null) {
+                    bindingResult.rejectValue("cargoWeightKg", "required", "Для грузовой поездки укажите вес или объем груза.")
+                }
+            }
+
+            TransportationRecordType.SERVICE -> {
+                if (form.hoursUsed == null) {
+                    bindingResult.rejectValue("hoursUsed", "required", "Для служебной поездки укажите часы работы.")
+                }
+            }
+        }
+    }
+
+    private fun transportationRecordErrorMessage(exception: DataAccessException): String {
+        val details = generateSequence<Throwable>(exception) { cause -> cause.cause }
+            .mapNotNull { cause -> cause.message }
+            .joinToString("\n")
+
+        return when {
+            "Для PASSENGER записи route_id обязателен" in details ->
+                "Для пассажирской поездки необходимо выбрать маршрут."
+            "Для PASSENGER записи passenger_count обязателен" in details ->
+                "Для пассажирской поездки необходимо указать число пассажиров."
+            "Для CARGO записи" in details ->
+                "Для грузовой поездки необходимо указать вес или объем груза."
+            "Для SERVICE записи hours_used обязателен" in details ->
+                "Для служебной поездки необходимо указать часы работы."
+            else ->
+                "Не удалось сохранить эксплуатационную запись. Проверьте тип поездки и заполненные поля."
+        }
     }
 }

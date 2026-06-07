@@ -2,7 +2,7 @@ package ru.autoenterprise.route
 
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -54,7 +54,7 @@ class RouteController(
             routeService.createRoute(form)
             redirectAttributes.addFlashAttribute("successMessage", "Маршрут добавлен.")
             "redirect:/routes"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("route.save", "Не удалось сохранить маршрут. Проверьте уникальность номера/типа и значения полей.")
             populateForm(model, form, true)
             "route/form"
@@ -98,7 +98,7 @@ class RouteController(
             bindingResult.reject("route.update", "Маршрут не найден.")
             populateForm(model, form.copy(id = id), false)
             "route/form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("route.update", "Не удалось обновить маршрут. Проверьте уникальность номера/типа и значения полей.")
             populateForm(model, form.copy(id = id), false)
             "route/form"
@@ -115,7 +115,7 @@ class RouteController(
             routeService.deleteRoute(id)
             redirectAttributes.addFlashAttribute("successMessage", "Маршрут удален.")
             "redirect:/routes"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить маршрут, если на него ссылаются назначения или записи эксплуатации.")
             "redirect:/routes"
         }

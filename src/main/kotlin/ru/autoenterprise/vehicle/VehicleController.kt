@@ -2,7 +2,7 @@ package ru.autoenterprise.vehicle
 
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -60,7 +60,7 @@ class VehicleController(
             bindingResult.rejectValue("categoryId", "vehicle.categoryId", ex.message ?: "Категория транспорта не найдена.")
             populateVehicleForm(model, form, true)
             "vehicle/form"
-        } catch (ex: DataIntegrityViolationException) {
+        } catch (ex: DataAccessException) {
             bindingResult.reject("vehicle.save", "Не удалось сохранить транспорт. Проверьте уникальность номеров и обязательные поля.")
             populateVehicleForm(model, form, true)
             "vehicle/form"
@@ -104,7 +104,7 @@ class VehicleController(
             bindingResult.reject("vehicle.update", ex.message ?: "Транспорт не найден.")
             populateVehicleForm(model, form.copy(id = id), false)
             "vehicle/form"
-        } catch (ex: DataIntegrityViolationException) {
+        } catch (ex: DataAccessException) {
             bindingResult.reject("vehicle.update", "Не удалось обновить транспорт. Проверьте уникальность номеров и обязательные поля.")
             populateVehicleForm(model, form.copy(id = id), false)
             "vehicle/form"
@@ -121,7 +121,7 @@ class VehicleController(
             vehicleService.deleteVehicle(id)
             redirectAttributes.addFlashAttribute("successMessage", "Транспорт удален.")
             "redirect:/vehicles"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить транспорт, на который уже ссылаются связанные записи.")
             "redirect:/vehicles"
         }
@@ -173,7 +173,7 @@ class VehicleCategoryController(
             categoryService.createCategory(form)
             redirectAttributes.addFlashAttribute("successMessage", "Категория транспорта добавлена.")
             "redirect:/vehicle-categories"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("category.save", "Не удалось сохранить категорию. Название должно быть уникальным.")
             populateCategoryForm(model, form, true)
             "vehicle/category-form"
@@ -217,7 +217,7 @@ class VehicleCategoryController(
             bindingResult.reject("category.update", "Категория транспорта не найдена.")
             populateCategoryForm(model, form.copy(id = id), false)
             "vehicle/category-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("category.update", "Не удалось обновить категорию. Название должно быть уникальным.")
             populateCategoryForm(model, form.copy(id = id), false)
             "vehicle/category-form"
@@ -234,7 +234,7 @@ class VehicleCategoryController(
             categoryService.deleteCategory(id)
             redirectAttributes.addFlashAttribute("successMessage", "Категория транспорта удалена.")
             "redirect:/vehicle-categories"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить категорию, если на нее ссылаются транспортные средства.")
             "redirect:/vehicle-categories"
         }

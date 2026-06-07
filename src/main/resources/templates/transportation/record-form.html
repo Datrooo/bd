@@ -50,6 +50,7 @@
                     <option value="">Без маршрута</option>
                     <option th:each="route : ${routes}" th:value="${route.id}" th:text="${route.label}">12 / Центр - вокзал</option>
                 </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('routeId')}" th:errors="*{routeId}"></div>
             </div>
             <div class="col-md-4">
                 <label class="form-label" for="mileageKm">Пробег, км</label>

@@ -3,7 +3,7 @@ package ru.autoenterprise.component
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
 import java.time.LocalDate
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -63,7 +63,7 @@ class ComponentCatalogController(
             componentService.createComponent(form)
             redirectAttributes.addFlashAttribute("successMessage", "Агрегат добавлен.")
             "redirect:/components-catalog"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("component.save", "Не удалось сохранить агрегат. Серийный номер должен быть уникальным.")
             populateForm(model, form, true)
             "component/component-form"
@@ -103,7 +103,7 @@ class ComponentCatalogController(
             bindingResult.reject("component.update", "Агрегат не найден.")
             populateForm(model, form.copy(id = id), false)
             "component/component-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("component.update", "Не удалось обновить агрегат. Серийный номер должен быть уникальным.")
             populateForm(model, form.copy(id = id), false)
             "component/component-form"
@@ -117,7 +117,7 @@ class ComponentCatalogController(
             componentService.deleteComponent(id)
             redirectAttributes.addFlashAttribute("successMessage", "Агрегат удален.")
             "redirect:/components-catalog"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить агрегат, если на него ссылается история установки или ремонта.")
             "redirect:/components-catalog"
         }
@@ -174,7 +174,7 @@ class VehicleComponentHistoryController(
             bindingResult.reject("componentHistory.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "component/history-form"
-        } catch (ex: DataIntegrityViolationException) {
+        } catch (ex: DataAccessException) {
             bindingResult.reject("componentHistory.save", componentHistoryErrorMessage(ex))
             populateForm(model, form, true)
             "component/history-form"
@@ -214,7 +214,7 @@ class VehicleComponentHistoryController(
             bindingResult.reject("componentHistory.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "component/history-form"
-        } catch (ex: DataIntegrityViolationException) {
+        } catch (ex: DataAccessException) {
             bindingResult.reject("componentHistory.update", componentHistoryErrorMessage(ex))
             populateForm(model, form.copy(id = id), false)
             "component/history-form"
@@ -228,7 +228,7 @@ class VehicleComponentHistoryController(
             vehicleComponentHistoryService.deleteHistory(id)
             redirectAttributes.addFlashAttribute("successMessage", "История агрегата удалена.")
             "redirect:/component-history"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить историю агрегата.")
             "redirect:/component-history"
         }
@@ -244,7 +244,7 @@ class VehicleComponentHistoryController(
         model.addAttribute("formAction", if (creating) "/component-history" else "/component-history/${form.id}")
     }
 
-    private fun componentHistoryErrorMessage(exception: DataIntegrityViolationException): String {
+    private fun componentHistoryErrorMessage(exception: DataAccessException): String {
         val details = generateSequence<Throwable>(exception) { cause -> cause.cause }
             .mapNotNull { cause -> cause.message }
             .joinToString("\n")

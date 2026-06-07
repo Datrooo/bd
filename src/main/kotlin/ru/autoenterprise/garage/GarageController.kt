@@ -3,7 +3,7 @@ package ru.autoenterprise.garage
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
 import java.time.LocalDate
-import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.DataAccessException
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -74,7 +74,7 @@ class GarageObjectController(
             bindingResult.reject("garageObject.save", ex.message ?: "Проверьте данные формы.")
             populateForm(model, form, true)
             "garage/object-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("garageObject.save", "Не удалось сохранить объект гаражного хозяйства.")
             populateForm(model, form, true)
             "garage/object-form"
@@ -118,7 +118,7 @@ class GarageObjectController(
             bindingResult.reject("garageObject.update", ex.message ?: "Проверьте данные формы.")
             populateForm(model, form.copy(id = id), false)
             "garage/object-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("garageObject.update", "Не удалось обновить объект гаражного хозяйства.")
             populateForm(model, form.copy(id = id), false)
             "garage/object-form"
@@ -135,7 +135,7 @@ class GarageObjectController(
         } catch (ex: IllegalStateException) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.message ?: "Нельзя удалить объект гаражного хозяйства.")
             "redirect:/garage-objects"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Нельзя удалить объект, если на него ссылаются дочерние объекты или история размещения.")
             "redirect:/garage-objects"
         }
@@ -195,7 +195,7 @@ class VehicleLocationHistoryController(
             bindingResult.reject("vehicleLocation.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "garage/location-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("vehicleLocation.save", "Не удалось сохранить историю размещения транспорта.")
             populateForm(model, form, true)
             "garage/location-form"
@@ -235,7 +235,7 @@ class VehicleLocationHistoryController(
             bindingResult.reject("vehicleLocation.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "garage/location-form"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             bindingResult.reject("vehicleLocation.update", "Не удалось обновить историю размещения транспорта.")
             populateForm(model, form.copy(id = id), false)
             "garage/location-form"
@@ -249,7 +249,7 @@ class VehicleLocationHistoryController(
             vehicleLocationHistoryService.deleteLocation(id)
             redirectAttributes.addFlashAttribute("successMessage", "История размещения транспорта удалена.")
             "redirect:/vehicle-locations"
-        } catch (_: DataIntegrityViolationException) {
+        } catch (_: DataAccessException) {
             redirectAttributes.addFlashAttribute("errorMessage", "Не удалось удалить историю размещения транспорта.")
             "redirect:/vehicle-locations"
         }
