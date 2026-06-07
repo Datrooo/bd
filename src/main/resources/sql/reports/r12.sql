@@ -4,5 +4,6 @@ SELECT v.id AS vehicle_id, v.inventory_number, v.registration_number,
 FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 WHERE v.id = :vehicle_id
-  AND r.start_date BETWEEN :start_date AND :end_date
+  AND r.start_date <= :end_date
+  AND (r.end_date IS NULL OR r.end_date >= :start_date)
 GROUP BY v.id, v.inventory_number, v.registration_number;

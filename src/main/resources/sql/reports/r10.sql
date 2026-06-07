@@ -5,5 +5,6 @@ FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id
 WHERE vc.name = :category_name
-  AND r.start_date BETWEEN :start_date AND :end_date
+  AND r.start_date <= :end_date
+  AND (r.end_date IS NULL OR r.end_date >= :start_date)
 GROUP BY vc.name;

@@ -28,8 +28,7 @@ body {
 code,
 .brand-kicker,
 .module-path,
-.detail-label,
-.footer-meta {
+.detail-label {
     font-family: "IBM Plex Mono", monospace;
 }
 
@@ -355,75 +354,6 @@ code,
     white-space: pre-wrap;
 }
 
-.scenario-grid {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-
-.scenario-card,
-.scenario-track {
-    background: rgba(16, 32, 40, 0.04);
-    border: 1px solid rgba(16, 32, 40, 0.08);
-    border-radius: 1rem;
-    padding: 1rem;
-}
-
-.scenario-card__header {
-    align-items: start;
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-}
-
-.scenario-step-list,
-.scenario-track-list {
-    display: grid;
-    gap: 0.9rem;
-}
-
-.scenario-step {
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(16, 32, 40, 0.08);
-    border-radius: 0.9rem;
-    padding: 0.85rem 0.95rem;
-}
-
-.scenario-step__path {
-    background: var(--app-accent-soft);
-    border-radius: 999px;
-    color: var(--app-accent);
-    display: inline-block;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.78rem;
-    padding: 0.32rem 0.62rem;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.scenario-step__path:hover,
-.scenario-step__path:focus {
-    color: var(--app-accent);
-    text-decoration: underline;
-}
-
-.app-footer {
-    border-top: 1px solid var(--app-line);
-    color: var(--app-muted);
-    margin-top: auto;
-    padding: 1.4rem 0 2rem;
-}
-
-.footer-title {
-    color: var(--app-ink);
-    font-weight: 700;
-}
-
-.footer-meta {
-    align-self: end;
-    color: var(--app-muted);
-}
-
 .narrow-card {
     max-width: 34rem;
 }
@@ -439,7 +369,4 @@ code,
         flex-direction: column;
     }
 
-    .scenario-card__header {
-        flex-direction: column;
-    }
 }

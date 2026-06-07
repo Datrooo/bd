@@ -8,11 +8,11 @@
     <section class="panel-card mb-4">
         <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-start">
             <div>
-                <div class="eyebrow" th:text="${appStageCurrent}">Этап 7</div>
+                <div class="eyebrow">Инструменты администратора</div>
                 <h1 class="section-title mb-1">SQL-консоль</h1>
-                <p class="section-description mb-0">Изолированный технический раздел только для `SUPERADMIN`. Консоль выполняет только read-only `SELECT`/`WITH` запросы к прикладной PostgreSQL-схеме через отдельного ограниченного DB-пользователя.</p>
+                <p class="section-description mb-0">Изолированный технический раздел только для `SUPERADMIN`. Консоль выполняет только read-only `SELECT`-запросы к прикладной PostgreSQL-схеме через отдельного ограниченного DB-пользователя.</p>
             </div>
-            <div class="module-tag">SELECT/WITH only</div>
+            <div class="module-tag">SELECT only</div>
         </div>
     </section>
 
@@ -63,7 +63,7 @@
                 <h2 class="section-title h4">Ограничения консоли</h2>
                 <ul class="planned-list sql-console-policy">
                     <li>Только `SUPERADMIN`.</li>
-                    <li>Только один `SELECT` или `WITH` statement.</li>
+                    <li>Только один `SELECT` statement.</li>
                     <li>Только прикладные таблицы и безопасные SQL-функции.</li>
                     <li>Системные namespace PostgreSQL недоступны.</li>
                     <li>Лимит результата: 200 строк.</li>

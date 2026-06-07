@@ -124,7 +124,6 @@ class ComponentCatalogController(
 
     private fun populateForm(model: Model, form: ComponentForm, creating: Boolean) {
         model.addAttribute("component", form)
-        model.addAttribute("componentStatuses", ComponentService.componentStatuses)
         model.addAttribute("pageTitle", if (creating) "Новый агрегат" else "Редактирование агрегата")
         model.addAttribute("submitLabel", if (creating) "Создать" else "Сохранить")
         model.addAttribute("formAction", if (creating) "/components-catalog" else "/components-catalog/${form.id}")
@@ -175,8 +174,8 @@ class VehicleComponentHistoryController(
             bindingResult.reject("componentHistory.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "component/history-form"
-        } catch (_: DataIntegrityViolationException) {
-            bindingResult.reject("componentHistory.save", "Не удалось сохранить историю агрегата.")
+        } catch (ex: DataIntegrityViolationException) {
+            bindingResult.reject("componentHistory.save", componentHistoryErrorMessage(ex))
             populateForm(model, form, true)
             "component/history-form"
         }
@@ -215,8 +214,8 @@ class VehicleComponentHistoryController(
             bindingResult.reject("componentHistory.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "component/history-form"
-        } catch (_: DataIntegrityViolationException) {
-            bindingResult.reject("componentHistory.update", "Не удалось обновить историю агрегата.")
+        } catch (ex: DataIntegrityViolationException) {
+            bindingResult.reject("componentHistory.update", componentHistoryErrorMessage(ex))
             populateForm(model, form.copy(id = id), false)
             "component/history-form"
         }
@@ -243,5 +242,28 @@ class VehicleComponentHistoryController(
         model.addAttribute("pageTitle", if (creating) "Новая запись истории агрегата" else "Редактирование истории агрегата")
         model.addAttribute("submitLabel", if (creating) "Создать" else "Сохранить")
         model.addAttribute("formAction", if (creating) "/component-history" else "/component-history/${form.id}")
+    }
+
+    private fun componentHistoryErrorMessage(exception: DataIntegrityViolationException): String {
+        val details = generateSequence<Throwable>(exception) { cause -> cause.cause }
+            .mapNotNull { cause -> cause.message }
+            .joinToString("\n")
+
+        return when {
+            "уже установлен" in details -> "Агрегат уже установлен. Сначала добавьте запись о снятии или замене."
+            "не был установлен" in details || "так как он не установлен" in details ->
+                "Снять, заменить или отремонтировать можно только ранее установленный агрегат."
+            "установлен на другом автомобиле" in details ->
+                "Выбранный агрегат установлен на другом автомобиле."
+            "ремонт относится к другому автомобилю" in details ->
+                "Выбранный ремонт относится к другому автомобилю."
+            "Дата действия должна входить" in details ->
+                "Дата действия должна входить в период выбранного ремонта."
+            "необходимо выбрать ремонт" in details ->
+                "Для ремонта или замены агрегата необходимо выбрать ремонт."
+            "повторная установка" in details || "следующим действием может быть только установка" in details ->
+                "Действие нарушает хронологическую последовательность истории агрегата."
+            else -> "Не удалось сохранить историю агрегата. Проверьте последовательность действий, транспорт, ремонт и дату."
+        }
     }
 }

@@ -38,7 +38,9 @@
             <div class="col-md-4">
                 <label class="form-label" for="actionType">Тип действия</label>
                 <select id="actionType" th:field="*{actionType}" class="form-select" required>
-                    <option th:each="actionType : ${actionTypes}" th:value="${actionType}" th:text="${actionType}">INSTALLED</option>
+                    <option th:each="actionType : ${actionTypes}"
+                            th:value="${actionType}"
+                            th:text="${actionType.displayName}">Установка</option>
                 </select>
                 <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('actionType')}" th:errors="*{actionType}"></div>
             </div>

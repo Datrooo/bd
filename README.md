@@ -1,6 +1,6 @@
-# Auto Enterprise IS
+# Auto Enterprise
 
-`Auto Enterprise IS` — учебная информационная система автопредприятия города.
+`Auto Enterprise` — учебная информационная система автопредприятия города.
 
 Приложение покрывает учет автопарка, сотрудников, оргструктуры, гаражного хозяйства, маршрутов, эксплуатации транспорта, ремонтов, агрегатов, пользователей и ролей. Backend написан на `Kotlin + Spring Boot`, UI собран на `Thymeleaf + Bootstrap`, данные хранятся в `PostgreSQL`, а схема и бизнес-логика поднимаются через `Flyway`.
 
@@ -8,9 +8,8 @@
 
 - DB-backed авторизация и роли через таблицы `app_user`, `role`, `user_role`
 - CRUD по основным предметным модулям
-- 29 SQL-отчетов из `queries.sql`
+- 28 SQL-отчетов из `queries.sql`
 - read-only SQL-консоль только для `SUPERADMIN`
-- demo-сценарий по ролям для показа проекта
 - error-страницы `403`, `404`, `500`
 
 ## Технологии
@@ -43,7 +42,7 @@
 - `src/main/resources/static` — CSS и статические ресурсы
 - `src/main/resources/db/migration` — базовые Flyway-миграции
 - `src/main/resources/db/local` — локальные dev-only миграции с seed-данными
-- `src/main/resources/sql/reports` — runtime-копии 29 SQL-отчетов
+- `src/main/resources/sql/reports` — runtime-копии 28 SQL-отчетов
 - `config/application-local.example.yml` — пример локального конфига
 - `compose.yaml` — локальный PostgreSQL
 
@@ -84,7 +83,7 @@ SQL-файлы в корне репозитория — это source pack пр�
 Собрать проект:
 
 ```bash
-./gradlew clean build
+3
 ```
 
 Собрать исполняемый jar:
@@ -180,17 +179,9 @@ spring.config.import=optional:file:./config/application-local.yml
 
 Раздел `/dashboard` показывает:
 
-- текущий этап проекта
+- общая сводка проекта
 - доступные разделы для текущей роли
 - быстрые переходы в рабочие модули
-
-### Demo-сценарий
-
-Раздел `/demo-scenario` нужен для показа проекта:
-
-- подсказывает, что показывать под каждой ролью
-- дает готовые маршруты по модулям
-- содержит технический сценарий для `SUPERADMIN`
 
 ### CRUD-разделы
 
@@ -210,7 +201,7 @@ spring.config.import=optional:file:./config/application-local.yml
 
 ### Отчеты
 
-Раздел `/reports` содержит каталог из 29 SQL-отчетов.
+Раздел `/reports` содержит каталог из 28 SQL-отчетов.
 
 Что важно:
 
@@ -222,7 +213,7 @@ spring.config.import=optional:file:./config/application-local.yml
 Примеры:
 
 - `/reports/r01` — отчет без параметров
-- `/reports/r29` — сводка по маршрутам за период
+- `/reports/r18` — отчет по использованным агрегатам с параметрами
 
 ### SQL-консоль
 
@@ -231,7 +222,7 @@ spring.config.import=optional:file:./config/application-local.yml
 Ограничения:
 
 - только один SQL statement
-- только `SELECT` и `WITH`
+- только `SELECT`
 - только прикладные таблицы и безопасные SQL-функции
 - системные namespace PostgreSQL недоступны
 - лимит результата: 200 строк
@@ -251,7 +242,7 @@ ORDER BY id;
 ## Короткий demo-маршрут
 
 1. Войти под `viewer / viewer` и показать `/dashboard`, `/vehicles`, `/reports/r01`
-2. Войти под `dispatcher / dispatcher` и показать `/transportation-records`, затем `/reports/r29`
+2. Войти под `dispatcher / dispatcher` и показать `/transportation-records`, затем `/reports/r17`
 3. Войти под `mechanic / mechanic` и показать `/repairs-journal`, `/component-history`
 4. Войти под `admin / admin` и показать `/users`, затем подтвердить запрет на `/sql-console`
 5. Войти под `superadmin / superadmin` и выполнить read-only запрос в `/sql-console`

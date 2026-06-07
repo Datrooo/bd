@@ -24,9 +24,6 @@ spring:
     cache: false
 
 app:
-  stage:
-    current: "Этап 7"
-    description: "Финальная доводка, демонстрационный сценарий и подготовка проекта к сдаче"
   reports:
     max-rows: 500
     timeout-seconds: 15

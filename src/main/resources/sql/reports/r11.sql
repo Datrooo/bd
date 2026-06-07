@@ -4,5 +4,6 @@ SELECT v.brand_name,
 FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 WHERE v.brand_name = :brand_name
-  AND r.start_date BETWEEN :start_date AND :end_date
+  AND r.start_date <= :end_date
+  AND (r.end_date IS NULL OR r.end_date >= :start_date)
 GROUP BY v.brand_name;

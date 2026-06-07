@@ -24,11 +24,11 @@ class ReportCatalog(
         definition("r13", "Подчиненность персонала", "Иерархия рабочие -> бригадиры -> мастера -> начальники цехов.", PERSONNEL_GROUP, listOf(ReportParameterDefinition.none())),
         definition("r14", "Наличие гаражного хозяйства в целом", "Список объектов гаражного хозяйства предприятия.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),
         definition("r15", "Наличие гаражного хозяйства по каждой категории транспорта", "Текущее размещение транспорта по объектам гаражного хозяйства и категориям.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),
-        definition("r16", "Распределение автотранспорта на предприятии", "Текущее и историческое размещение транспорта по объектам предприятия.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),
+        definition("r16", "Распределение автотранспорта на предприятии", "Текущее размещение транспорта по объектам предприятия.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),
         definition("r17", "Грузоперевозки, выполненные указанной автомашиной за период", "Детализация грузовых перевозок по выбранной машине.", EXPLOITATION_GROUP, listOf(ReportParameterDefinition.vehicle(), ReportParameterDefinition.dateRange())),
-        definition("r18", "Число использованных для ремонта агрегатов для категории транспорта за период", "Использование агрегатов по категории транспорта.", REPAIRS_GROUP, listOf(ReportParameterDefinition.category(), ReportParameterDefinition.dateRange())),
-        definition("r19", "Число использованных для ремонта агрегатов для марки транспорта за период", "Использование агрегатов по марке транспорта.", REPAIRS_GROUP, listOf(ReportParameterDefinition.brand(), ReportParameterDefinition.dateRange())),
-        definition("r20", "Число использованных для ремонта агрегатов для конкретной машины за период", "Использование агрегатов по выбранной машине.", REPAIRS_GROUP, listOf(ReportParameterDefinition.vehicle(), ReportParameterDefinition.dateRange())),
+        definition("r18", "Число использованных для ремонта агрегатов для категории транспорта за период", "Установленные при ремонте агрегаты выбранного типа по категории транспорта.", REPAIRS_GROUP, listOf(ReportParameterDefinition.category(), ReportParameterDefinition.componentType(), ReportParameterDefinition.dateRange())),
+        definition("r19", "Число использованных для ремонта агрегатов для марки транспорта за период", "Установленные при ремонте агрегаты выбранного типа по марке транспорта.", REPAIRS_GROUP, listOf(ReportParameterDefinition.brand(), ReportParameterDefinition.componentType(), ReportParameterDefinition.dateRange())),
+        definition("r20", "Число использованных для ремонта агрегатов для конкретной машины за период", "Установленные при ремонте агрегаты выбранного типа по выбранной машине.", REPAIRS_GROUP, listOf(ReportParameterDefinition.vehicle(), ReportParameterDefinition.componentType(), ReportParameterDefinition.dateRange())),
         definition("r21", "Полученная техника за период", "Поступление техники за выбранный период.", ACQUISITION_GROUP, listOf(ReportParameterDefinition.dateRange())),
         definition("r22", "Списанная техника за период", "Выбытие техники за выбранный период.", ACQUISITION_GROUP, listOf(ReportParameterDefinition.dateRange())),
         definition("r23", "Состав подчиненных указанного бригадира", "Сотрудники, закрепленные за бригадой выбранного бригадира.", PERSONNEL_GROUP, listOf(ReportParameterDefinition.employee())),
@@ -37,7 +37,6 @@ class ReportCatalog(
         definition("r26", "Работы, выполненные указанным специалистом за период в целом", "Ремонтные работы выбранного специалиста за период.", REPAIRS_GROUP, listOf(ReportParameterDefinition.employee(), ReportParameterDefinition.dateRange())),
         definition("r27", "Работы, выполненные указанным специалистом за период по конкретной машине", "Ремонтные работы выбранного специалиста по конкретной машине.", REPAIRS_GROUP, listOf(ReportParameterDefinition.employee(), ReportParameterDefinition.vehicle(), ReportParameterDefinition.dateRange())),
         definition("r28", "Суммарная работа бригад по ремонту", "Сводка по ремонтным бригадам и стоимости работ.", REPAIRS_GROUP, listOf(ReportParameterDefinition.none())),
-        definition("r29", "Сводка по маршрутам и пассажиропотоку", "Маршруты, число машин, пассажиропоток и выручка за период.", EXPLOITATION_GROUP, listOf(ReportParameterDefinition.dateRange())),
     )
 
     private val groupOrder = listOf(
@@ -82,11 +81,11 @@ class ReportCatalog(
         )
 
     private fun validateDefinitions() {
-        require(definitions.size == 29) { "Ожидалось 29 отчетов, найдено ${definitions.size}." }
+        require(definitions.size == 28) { "Ожидалось 28 отчетов, найдено ${definitions.size}." }
 
-        val expectedCodes = (1..29).map { index -> "r%02d".format(index) }
+        val expectedCodes = (1..28).map { index -> "r%02d".format(index) }
         require(definitions.map { definition -> definition.code } == expectedCodes) {
-            "Коды отчетов должны быть последовательностью r01..r29."
+            "Коды отчетов должны быть последовательностью r01..r28."
         }
 
         require(definitions.map { definition -> definition.code }.toSet().size == definitions.size) {

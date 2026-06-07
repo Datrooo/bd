@@ -33,9 +33,10 @@ WHERE vda.vehicle_id = :vehicle_id
 ORDER BY e.last_name, e.first_name;
 
 -- 5. Число водителей по указанной автомашине
-SELECT COUNT(*) AS total_drivers_for_vehicle
+SELECT COUNT(DISTINCT driver_employee_id) AS total_drivers_for_vehicle
 FROM vehicle_driver_assignment
-WHERE vehicle_id = :vehicle_id;
+WHERE vehicle_id = :vehicle_id
+  AND end_date IS NULL;
 
 -- 6. Распределение водителей по автомобилям
 SELECT v.id AS vehicle_id, v.inventory_number, v.registration_number,
@@ -57,6 +58,8 @@ FROM route_vehicle_assignment rva
 JOIN route r ON r.id = rva.route_id
 JOIN vehicle v ON v.id = rva.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id
+WHERE r.route_type IN ('BUS', 'MINIBUS')
+  AND rva.end_date IS NULL
 ORDER BY r.route_number, v.inventory_number;
 
 -- 8. Пробег транспорта определенной категории за период
@@ -85,7 +88,8 @@ FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id
 WHERE vc.name = :category_name
-  AND r.start_date BETWEEN :start_date AND :end_date
+  AND r.start_date <= :end_date
+  AND (r.end_date IS NULL OR r.end_date >= :start_date)
 GROUP BY vc.name;
 
 -- 11. Число ремонтов и их стоимость для марки транспорта за период
@@ -95,7 +99,8 @@ SELECT v.brand_name,
 FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 WHERE v.brand_name = :brand_name
-  AND r.start_date BETWEEN :start_date AND :end_date
+  AND r.start_date <= :end_date
+  AND (r.end_date IS NULL OR r.end_date >= :start_date)
 GROUP BY v.brand_name;
 
 -- 12. Число ремонтов и их стоимость для конкретной автомашины за период
@@ -105,7 +110,8 @@ SELECT v.id AS vehicle_id, v.inventory_number, v.registration_number,
 FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 WHERE v.id = :vehicle_id
-  AND r.start_date BETWEEN :start_date AND :end_date
+  AND r.start_date <= :end_date
+  AND (r.end_date IS NULL OR r.end_date >= :start_date)
 GROUP BY v.id, v.inventory_number, v.registration_number;
 
 -- 13. Подчиненность персонала: рабочие -> бригадиры -> мастера -> начальники цехов
@@ -160,6 +166,7 @@ JOIN vehicle_category vc ON vc.id = v.category_id
 JOIN garage_object go ON go.id = vlh.garage_object_id
 LEFT JOIN workshop w ON w.id = go.workshop_id
 LEFT JOIN section s ON s.id = go.section_id
+WHERE vlh.end_date IS NULL
 ORDER BY vc.name, v.inventory_number;
 
 -- 17. Грузоперевозки, выполненные указанной автомашиной за период
@@ -182,8 +189,11 @@ FROM vehicle_component_history vch
 JOIN vehicle v ON v.id = vch.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id
 JOIN component c ON c.id = vch.component_id
-WHERE vch.action_date BETWEEN :start_date AND :end_date
-  AND vc.name = :category_name
+WHERE vc.name = :category_name
+  AND c.component_type = :component_type
+  AND vch.repair_id IS NOT NULL
+  AND vch.action_type = 'INSTALLED'
+  AND vch.action_date BETWEEN :start_date AND :end_date
 GROUP BY vc.name, c.component_type
 ORDER BY c.component_type;
 
@@ -196,6 +206,9 @@ FROM vehicle_component_history vch
 JOIN vehicle v ON v.id = vch.vehicle_id
 JOIN component c ON c.id = vch.component_id
 WHERE v.brand_name = :brand_name
+  AND c.component_type = :component_type
+  AND vch.repair_id IS NOT NULL
+  AND vch.action_type = 'INSTALLED'
   AND vch.action_date BETWEEN :start_date AND :end_date
 GROUP BY v.brand_name, c.component_type
 ORDER BY c.component_type;
@@ -209,6 +222,9 @@ FROM vehicle_component_history vch
 JOIN vehicle v ON v.id = vch.vehicle_id
 JOIN component c ON c.id = vch.component_id
 WHERE v.id = :vehicle_id
+  AND c.component_type = :component_type
+  AND vch.repair_id IS NOT NULL
+  AND vch.action_type = 'INSTALLED'
   AND vch.action_date BETWEEN :start_date AND :end_date
 GROUP BY v.id, v.inventory_number, v.registration_number, c.component_type
 ORDER BY c.component_type;
@@ -308,17 +324,3 @@ LEFT JOIN repair r ON r.brigade_id = b.id
 LEFT JOIN repair_work rw ON rw.repair_id = r.id
 GROUP BY b.id, b.name
 ORDER BY b.name;
-
--- 29. Сводка по маршрутам и пассажиропотоку
-SELECT r.id AS route_id, r.route_number, r.name,
-       COUNT(DISTINCT rva.vehicle_id) AS vehicles_count,
-       COALESCE(SUM(tr.passenger_count), 0) AS total_passengers,
-       COALESCE(SUM(tr.revenue), 0) AS total_revenue
-FROM route r
-LEFT JOIN route_vehicle_assignment rva ON rva.route_id = r.id
-LEFT JOIN transportation_record tr
-       ON tr.route_id = r.id
-      AND tr.record_type = 'PASSENGER'
-      AND tr.record_date BETWEEN :start_date AND :end_date
-GROUP BY r.id, r.route_number, r.name
-ORDER BY r.route_number;

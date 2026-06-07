@@ -95,7 +95,9 @@ class RepairService(
 
     fun repairOptions(): List<RepairOption> =
         repairRepository.findAll(Sort.by("startDate").descending()).map { repair ->
-            RepairOption(repair.id!!, "#${repair.id} / ${vehicleLabel(repair.vehicle)}")
+            val period = repair.endDate?.let { endDate -> "${repair.startDate} - $endDate" }
+                ?: "с ${repair.startDate}"
+            RepairOption(repair.id!!, "#${repair.id} / ${vehicleLabel(repair.vehicle)} / $period")
         }
 
     fun getRepairForm(id: Long): RepairForm {

@@ -89,6 +89,7 @@ class ReportController(
         model.addAttribute("employees", referenceData.employees)
         model.addAttribute("categories", referenceData.categories)
         model.addAttribute("brands", referenceData.brands)
+        model.addAttribute("componentTypes", referenceData.componentTypes)
         model.addAttribute("tableResult", tableResult)
         model.addAttribute("errorMessage", errorMessage)
     }
@@ -109,6 +110,9 @@ class ReportController(
         }
         if (report.requiresBrand && request.brandName.isNullOrBlank()) {
             bindingResult.rejectValue("brandName", "required", "Выберите марку транспорта.")
+        }
+        if (report.requiresComponentType && request.componentType.isNullOrBlank()) {
+            bindingResult.rejectValue("componentType", "required", "Выберите тип агрегата.")
         }
         if (report.requiresDateRange && request.startDate == null) {
             bindingResult.rejectValue("startDate", "required", "Укажите дату начала периода.")

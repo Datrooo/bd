@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
+import ru.autoenterprise.component.ComponentService
 import ru.autoenterprise.employee.EmployeeService
 import ru.autoenterprise.vehicle.VehicleCategoryService
 import ru.autoenterprise.vehicle.VehicleService
@@ -21,6 +22,7 @@ class ReportService(
     private val vehicleService: VehicleService,
     private val employeeService: EmployeeService,
     private val vehicleCategoryService: VehicleCategoryService,
+    private val componentService: ComponentService,
     private val reportProperties: ReportProperties,
 ) {
 
@@ -50,6 +52,9 @@ class ReportService(
             },
             brands = vehicleService.brandOptions().map { brand ->
                 ReportSelectOption(brand, brand)
+            },
+            componentTypes = componentService.componentTypeOptions().map { componentType ->
+                ReportSelectOption(componentType, componentType)
             },
         )
 
@@ -99,6 +104,9 @@ class ReportService(
         }
         if (definition.requiresBrand) {
             params.addValue("brand_name", request.brandName)
+        }
+        if (definition.requiresComponentType) {
+            params.addValue("component_type", request.componentType)
         }
         if (definition.requiresDateRange) {
             params.addValue("start_date", request.startDate)

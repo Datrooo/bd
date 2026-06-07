@@ -76,6 +76,15 @@
                 <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('brandName')}" th:errors="*{brandName}"></div>
             </div>
 
+            <div class="col-md-6" th:if="${report.requiresComponentType}">
+                <label class="form-label" for="componentType">Тип агрегата</label>
+                <select id="componentType" th:field="*{componentType}" class="form-select">
+                    <option value="">Выберите тип агрегата</option>
+                    <option th:each="type : ${componentTypes}" th:value="${type.value}" th:text="${type.label}">ENGINE</option>
+                </select>
+                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('componentType')}" th:errors="*{componentType}"></div>
+            </div>
+
             <div class="col-md-6" th:if="${report.requiresDateRange}">
                 <label class="form-label" for="startDate">Дата начала</label>
                 <input id="startDate" th:field="*{startDate}" type="date" class="form-control">

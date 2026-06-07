@@ -6,4 +6,6 @@ FROM route_vehicle_assignment rva
 JOIN route r ON r.id = rva.route_id
 JOIN vehicle v ON v.id = rva.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id
+WHERE r.route_type IN ('BUS', 'MINIBUS')
+  AND rva.end_date IS NULL
 ORDER BY r.route_number, v.inventory_number;

@@ -1,15 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <body>
-<footer th:fragment="footer" class="app-footer">
-    <div class="container d-flex flex-column flex-lg-row justify-content-between gap-2">
-        <div>
-            <div class="footer-title" th:text="${appStageHeading}">Этап 7: Финальная доводка, демонстрационный сценарий и подготовка проекта к сдаче</div>
-            <div class="footer-copy">Kotlin + Spring Boot + Thymeleaf + PostgreSQL + Flyway. DB-backed авторизация, предметные CRUD-модули, 29 SQL-отчетов, read-only SQL-консоль и готовый demo-сценарий уже работают поверх одной и той же схемы.</div>
-        </div>
-        <div class="footer-meta">Источник истины: `ddl.sql`, `triggers.sql`, `seed.sql`, `queries.sql`.</div>
-    </div>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<th:block th:fragment="footer">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
 </body>
 </html>

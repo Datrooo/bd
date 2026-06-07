@@ -8,8 +8,6 @@ data class SectionDefinition(
     val slug: String,
     val title: String,
     val description: String,
-    val currentStatus: String,
-    val nextMilestone: String,
     val roles: List<AppRole>,
     val plannedArtifacts: List<String>,
 ) {
@@ -30,8 +28,6 @@ class SectionCatalog {
             slug = "vehicles",
             title = "Транспорт",
             description = "Автопарк, категории, поступление и выбытие техники.",
-            currentStatus = "CRUD по транспорту, категориям, поступлению и выбытию уже работает",
-            nextMilestone = "Следом: расширенные фильтры, история статусов и дополнительные проверки по жизненному циклу ТС.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Справочники категорий и статусов транспорта.",
@@ -43,8 +39,6 @@ class SectionCatalog {
             slug = "employees",
             title = "Персонал",
             description = "Сотрудники предприятия и кадровые данные.",
-            currentStatus = "CRUD по сотрудникам уже подключен к БД",
-            nextMilestone = "Следом: прием/увольнение, расширенные кадровые статусы и фильтры по составу персонала.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Списки сотрудников с поиском по ФИО и должности.",
@@ -56,8 +50,6 @@ class SectionCatalog {
             slug = "organization",
             title = "Оргструктура",
             description = "Цеха, участки, бригады и назначения сотрудников.",
-            currentStatus = "CRUD по цехам, участкам, бригадам и назначениям уже работает",
-            nextMilestone = "Следом: фильтры по оргструктуре, кадровые перемещения и сводные представления по подчиненности.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Иерархия цех -> участок -> бригада.",
@@ -69,8 +61,6 @@ class SectionCatalog {
             slug = "garage",
             title = "Гаражное хозяйство",
             description = "Гаражи, боксы, стоянки и история размещения транспорта.",
-            currentStatus = "CRUD по объектам гаражного хозяйства и размещению транспорта уже работает",
-            nextMilestone = "Следом: контроль вместимости, фильтры по объектам и служебные представления по текущему размещению.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Список объектов гаражного хозяйства.",
@@ -82,8 +72,6 @@ class SectionCatalog {
             slug = "routes",
             title = "Маршруты",
             description = "Маршруты и закрепление транспорта за маршрутами.",
-            currentStatus = "CRUD по маршрутам уже работает",
-            nextMilestone = "Следом: дополнительные фильтры по активности, сменам и эксплуатационной загрузке маршрутов.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Карточки маршрутов с типом и протяженностью.",
@@ -95,8 +83,6 @@ class SectionCatalog {
             slug = "transportation",
             title = "Эксплуатация",
             description = "Записи о пассажирских, грузовых и сервисных перевозках.",
-            currentStatus = "CRUD по назначениям на маршруты и эксплуатационным записям уже работает",
-            nextMilestone = "Следом: фильтры по типам эксплуатации, сменам и подготовка отчетных выборок.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Формы ввода записей по типам эксплуатации.",
@@ -108,8 +94,6 @@ class SectionCatalog {
             slug = "repairs",
             title = "Ремонты",
             description = "Ремонты транспорта и выполненные ремонтные работы.",
-            currentStatus = "CRUD по типам ремонта, журналу ремонтов и ремонтным работам уже работает",
-            nextMilestone = "Следом: фильтры по статусам, исполнителям и расширенный просмотр состава ремонта.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Журнал ремонтов по технике.",
@@ -121,8 +105,6 @@ class SectionCatalog {
             slug = "components",
             title = "Агрегаты",
             description = "Склад агрегатов и история их установки/снятия.",
-            currentStatus = "CRUD по агрегатам и истории их установки уже работает",
-            nextMilestone = "Следом: фильтры по типам агрегатов, связка с ремонтной аналитикой и просмотр жизненного цикла.",
             roles = allRoles,
             plannedArtifacts = listOf(
                 "Учет агрегатов по серийным номерам.",
@@ -134,8 +116,6 @@ class SectionCatalog {
             slug = "users",
             title = "Пользователи и роли",
             description = "Управление app_user, role и user_role.",
-            currentStatus = "CRUD по пользователям уже подключен к БД",
-            nextMilestone = "Следом: отдельное управление справочником ролей и аудит изменений доступа.",
             roles = listOf(AppRole.SUPERADMIN, AppRole.ADMIN),
             plannedArtifacts = listOf(
                 "Список учетных записей и привязка к employee.",
@@ -147,12 +127,10 @@ class SectionCatalog {
             slug = "reports",
             title = "Отчеты",
             description = "Отдельный модуль для SQL-отчетов из queries.sql.",
-            currentStatus = "Каталог и выполнение всех 29 SQL-отчетов уже работает",
-            nextMilestone = "Следом: финальная доводка, дополнительные тесты и демонстрационный сценарий.",
             roles = allRoles,
             plannedArtifacts = listOf(
-                "29 предметных отчетов из подготовленного набора SQL.",
-                "Параметры периода, машины, категории, марки и сотрудника.",
+                "28 предметных отчетов из подготовленного набора SQL.",
+                "Параметры периода, машины, категории, марки, типа агрегата и сотрудника.",
                 "Универсальный табличный вывод по alias-колонкам SQL.",
             ),
         ),
@@ -160,8 +138,6 @@ class SectionCatalog {
             slug = "sql-console",
             title = "SQL-консоль",
             description = "Технический раздел для SUPERADMIN.",
-            currentStatus = "SELECT/WITH-only SQL-консоль для SUPERADMIN уже работает",
-            nextMilestone = "Следом: финальная доводка, расширение проверок и демонстрационный сценарий проекта.",
             roles = listOf(AppRole.SUPERADMIN),
             plannedArtifacts = listOf(
                 "Изолированная форма выполнения произвольного read-only SQL.",

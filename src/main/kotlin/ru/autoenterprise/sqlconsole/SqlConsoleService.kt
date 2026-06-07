@@ -110,9 +110,7 @@ class SqlConsoleService(
             )
         }
 
-        val cteNames = extractCteNames(sanitized)
         val disallowedTables = extractReferencedTables(sanitized)
-            .filterNot(cteNames::contains)
             .filterNot(allowedTables::contains)
             .distinct()
         if (disallowedTables.isNotEmpty()) {
@@ -121,8 +119,8 @@ class SqlConsoleService(
             )
         }
 
-        if (!statementStart.startsWith("select") && !statementStart.startsWith("with")) {
-            throw SqlConsoleQueryRejectedException("Разрешены только read-only SELECT/WITH запросы.")
+        if (!selectStatementStartRegex.containsMatchIn(statementStart)) {
+            throw SqlConsoleQueryRejectedException("Разрешен только один read-only SELECT-запрос.")
         }
 
         return normalized
@@ -176,11 +174,6 @@ class SqlConsoleService(
             .map { match -> match.groupValues[1] }
             .toList()
 
-    private fun extractCteNames(sql: String): Set<String> =
-        cteNameRegex.findAll(sql)
-            .map { match -> match.groupValues[1] }
-            .toSet()
-
     private fun extractCallLikeTokens(sql: String): List<String> =
         callLikeTokenRegex.findAll(sql)
             .map { match -> match.groupValues[1] }
@@ -224,6 +217,7 @@ class SqlConsoleService(
             "listen",
             "unlisten",
             "notify",
+            "with",
         )
 
         private val allowedFunctions = setOf(
@@ -273,7 +267,6 @@ class SqlConsoleService(
             "over",
             "partition",
             "values",
-            "with",
         )
 
         private val allowedTables = setOf(
@@ -309,8 +302,8 @@ class SqlConsoleService(
         private val blockCommentRegex = Regex("(?s)/\\*.*?\\*/")
         private val lineCommentRegex = Regex("(?m)--.*?$")
         private val systemNamespaceRegex = Regex("\\b(?:information_schema|pg_catalog|pg_[a-z0-9_]+)\\b")
+        private val selectStatementStartRegex = Regex("^select\\b")
         private val tableReferenceRegex = Regex("\\b(?:from|join)\\s+(?:only\\s+)?(?:public\\.)?([a-z_][a-z0-9_]*)\\b")
-        private val cteNameRegex = Regex("\\b(?:with|,)\\s*([a-z_][a-z0-9_]*)\\s+as\\s*\\(")
         private val callLikeTokenRegex = Regex("\\b([a-z_][a-z0-9_]*)\\s*\\(")
     }
 }

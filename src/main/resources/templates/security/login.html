@@ -8,10 +8,6 @@
             <section class="login-card h-100">
                 <div class="eyebrow">Вход в систему</div>
                 <h1 class="login-title">Auto Enterprise IS</h1>
-                <p class="login-copy">
-                    Аутентификация переведена на таблицы <code>app_user</code>, <code>role</code> и <code>user_role</code>.
-                    Пароли проверяются через Spring Security, а локальные dev-учетки доступны только при запуске с dev-seed.
-                </p>
 
                 <div class="alert alert-danger" th:if="${param.error}">
                     Неверный логин или пароль.
@@ -46,7 +42,6 @@
                         <div class="eyebrow">Локальный dev seed</div>
                         <h2 class="section-title mb-0">Учетные записи для проверки ролей</h2>
                     </div>
-                    <span class="badge text-bg-warning">Только для локальной среды</span>
                 </div>
 
                 <div class="demo-account-list">

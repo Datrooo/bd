@@ -35,8 +35,11 @@ class ComponentService(
 
     fun componentOptions(): List<ComponentOption> =
         componentRepository.findAllByOrderBySerialNumberAsc().map { component ->
-            ComponentOption(component.id!!, "${component.serialNumber} / ${component.componentType}")
+            ComponentOption(component.id!!, "${component.serialNumber} / ${component.componentType} / ${component.status.name}")
         }
+
+    fun componentTypeOptions(): List<String> =
+        componentRepository.findDistinctComponentTypes()
 
     fun getComponentForm(id: Long): ComponentForm {
         val component = componentRepository.findById(id)
@@ -57,7 +60,7 @@ class ComponentService(
 
     @Transactional
     fun createComponent(form: ComponentForm) {
-        val component = ComponentEntity()
+        val component = ComponentEntity(status = ComponentStatus.IN_STOCK)
         applyComponent(component, form)
         componentRepository.save(component)
     }
@@ -75,10 +78,6 @@ class ComponentService(
         componentRepository.deleteById(id)
     }
 
-    companion object {
-        val componentStatuses: List<ComponentStatus> = ComponentStatus.entries
-    }
-
     private fun applyComponent(component: ComponentEntity, form: ComponentForm) {
         component.componentType = form.componentType.trim()
         component.serialNumber = form.serialNumber.trim()
@@ -86,7 +85,6 @@ class ComponentService(
         component.manufacturer = form.manufacturer?.trim().takeUnless { it.isNullOrBlank() }
         component.productionDate = form.productionDate
         component.purchaseDate = form.purchaseDate
-        component.status = form.status
         component.notes = form.notes?.trim().takeUnless { it.isNullOrBlank() }
     }
 }
@@ -107,7 +105,7 @@ class VehicleComponentHistoryService(
                 vehicleLabel = vehicleLabel(history.vehicle),
                 componentLabel = "${history.component.serialNumber} / ${history.component.componentType}",
                 repairLabel = history.repair?.let { "#${it.id}" },
-                actionType = history.actionType.name,
+                actionType = history.actionType.displayName,
                 actionDate = history.actionDate,
                 cost = history.cost,
             )

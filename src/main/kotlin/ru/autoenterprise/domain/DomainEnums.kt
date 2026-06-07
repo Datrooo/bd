@@ -66,9 +66,9 @@ enum class ComponentStatus {
     WRITTEN_OFF,
 }
 
-enum class VehicleComponentActionType {
-    INSTALLED,
-    REMOVED,
-    REPLACED,
-    REPAIRED,
+enum class VehicleComponentActionType(val displayName: String) {
+    INSTALLED("Установка"),
+    REMOVED("Снятие"),
+    REPLACED("Замена"),
+    REPAIRED("Ремонт"),
 }

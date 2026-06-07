@@ -9,6 +9,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration,classpath:db/local
+    out-of-order: true
     user: postgres
     password: postgres
   jpa:
@@ -36,7 +37,7 @@ app:
 
 # Скопируйте этот файл в config/application-local.yml перед локальным запуском.
 # Этот конфиг включает demo-seed только для локальной среды разработки.
-# Локальные dev-учетки после этапа 3:
+# Локальные dev-учетки:
 # superadmin / superadmin
 # admin / admin
 # dispatcher / dispatcher

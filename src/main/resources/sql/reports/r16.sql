@@ -8,4 +8,5 @@ JOIN vehicle_category vc ON vc.id = v.category_id
 JOIN garage_object go ON go.id = vlh.garage_object_id
 LEFT JOIN workshop w ON w.id = go.workshop_id
 LEFT JOIN section s ON s.id = go.section_id
+WHERE vlh.end_date IS NULL
 ORDER BY vc.name, v.inventory_number;

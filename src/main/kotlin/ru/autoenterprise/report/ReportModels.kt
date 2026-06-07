@@ -10,6 +10,7 @@ enum class ReportParameterType {
     EMPLOYEE,
     CATEGORY,
     BRAND,
+    COMPONENT_TYPE,
 }
 
 data class ReportParameterDefinition(
@@ -49,6 +50,12 @@ data class ReportParameterDefinition(
             label = "Марка",
             parameterNames = listOf("brand_name"),
         )
+
+        fun componentType() = ReportParameterDefinition(
+            type = ReportParameterType.COMPONENT_TYPE,
+            label = "Тип агрегата",
+            parameterNames = listOf("component_type"),
+        )
     }
 }
 
@@ -82,6 +89,9 @@ data class ReportDefinition(
     val requiresBrand: Boolean
         get() = hasParameter(ReportParameterType.BRAND)
 
+    val requiresComponentType: Boolean
+        get() = hasParameter(ReportParameterType.COMPONENT_TYPE)
+
     val parameterSummary: String
         get() = if (!requiresParameters) {
             "Без параметров"
@@ -104,6 +114,7 @@ data class ReportExecutionRequest(
     val employeeId: Long? = null,
     val categoryName: String? = null,
     val brandName: String? = null,
+    val componentType: String? = null,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
 )
@@ -130,6 +141,7 @@ data class ReportReferenceData(
     val employees: List<ReportSelectOption>,
     val categories: List<ReportSelectOption>,
     val brands: List<ReportSelectOption>,
+    val componentTypes: List<ReportSelectOption>,
 )
 
 data class ReportRequestForm(
@@ -137,6 +149,7 @@ data class ReportRequestForm(
     var employeeId: Long? = null,
     var categoryName: String? = null,
     var brandName: String? = null,
+    var componentType: String? = null,
     @field:DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     var startDate: LocalDate? = null,
     @field:DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -149,6 +162,7 @@ data class ReportRequestForm(
             employeeId = employeeId,
             categoryName = categoryName?.trim().takeUnless(String?::isNullOrBlank),
             brandName = brandName?.trim().takeUnless(String?::isNullOrBlank),
+            componentType = componentType?.trim().takeUnless(String?::isNullOrBlank),
             startDate = startDate,
             endDate = endDate,
         )
