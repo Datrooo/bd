@@ -1,7 +1,13 @@
-SELECT v.id AS vehicle_id, v.inventory_number, v.registration_number,
-       vc.name AS category, go.name AS garage_object, go.object_type,
-       w.name AS workshop_name, s.name AS section_name,
-       vlh.start_date, vlh.end_date
+SELECT v.id AS "ID транспорта",
+       v.inventory_number AS "Инвентарный номер",
+       v.registration_number AS "Регистрационный номер",
+       vc.name AS "Категория",
+       go.name AS "Гаражный объект",
+       go.object_type AS "Тип объекта",
+       w.name AS "Цех",
+       s.name AS "Участок",
+       vlh.start_date AS "Дата размещения",
+       vlh.end_date AS "Дата окончания размещения"
 FROM vehicle_location_history vlh
 JOIN vehicle v ON v.id = vlh.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id

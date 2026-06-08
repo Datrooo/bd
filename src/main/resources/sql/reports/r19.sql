@@ -1,7 +1,7 @@
-SELECT v.brand_name,
-       c.component_type,
-       COUNT(vch.id) AS component_actions_count,
-       COALESCE(SUM(vch.cost), 0) AS total_component_cost
+SELECT v.brand_name AS "Марка транспорта",
+       c.component_type AS "Тип агрегата",
+       COUNT(vch.id) AS "Число установленных агрегатов",
+       COALESCE(SUM(vch.cost), 0) AS "Общая стоимость агрегатов"
 FROM vehicle_component_history vch
 JOIN vehicle v ON v.id = vch.vehicle_id
 JOIN component c ON c.id = vch.component_id

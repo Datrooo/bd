@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import ru.autoenterprise.employee.EmployeeService
 import ru.autoenterprise.vehicle.VehicleService
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class OrganizationController {
@@ -64,8 +65,11 @@ class WorkshopController(
             workshopService.createWorkshop(form)
             redirectAttributes.addFlashAttribute("successMessage", "Цех добавлен.")
             "redirect:/workshops"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("workshop.save", "Не удалось сохранить цех. Проверьте уникальность названия.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "workshop.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить цех. Проверьте уникальность названия."),
+            )
             populateForm(model, form, true)
             "organization/workshop-form"
         }
@@ -104,8 +108,11 @@ class WorkshopController(
             bindingResult.reject("workshop.update", "Цех не найден.")
             populateForm(model, form.copy(id = id), false)
             "organization/workshop-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("workshop.update", "Не удалось обновить цех. Проверьте уникальность названия.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "workshop.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить цех. Проверьте уникальность названия."),
+            )
             populateForm(model, form.copy(id = id), false)
             "organization/workshop-form"
         }
@@ -175,8 +182,11 @@ class OrganizationSectionController(
             bindingResult.reject("section.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/section-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("section.save", "Не удалось сохранить участок. Проверьте уникальность в рамках цеха.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "section.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить участок. Проверьте уникальность в рамках цеха."),
+            )
             populateForm(model, form, true)
             "organization/section-form"
         }
@@ -215,8 +225,11 @@ class OrganizationSectionController(
             bindingResult.reject("section.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/section-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("section.update", "Не удалось обновить участок. Проверьте уникальность в рамках цеха.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "section.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить участок. Проверьте уникальность в рамках цеха."),
+            )
             populateForm(model, form.copy(id = id), false)
             "organization/section-form"
         }
@@ -287,8 +300,11 @@ class BrigadeController(
             bindingResult.reject("brigade.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/brigade-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("brigade.save", "Не удалось сохранить бригаду. Проверьте уникальность в рамках участка.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "brigade.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить бригаду. Проверьте уникальность в рамках участка."),
+            )
             populateForm(model, form, true)
             "organization/brigade-form"
         }
@@ -327,8 +343,11 @@ class BrigadeController(
             bindingResult.reject("brigade.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/brigade-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("brigade.update", "Не удалось обновить бригаду. Проверьте уникальность в рамках участка.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "brigade.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить бригаду. Проверьте уникальность в рамках участка."),
+            )
             populateForm(model, form.copy(id = id), false)
             "organization/brigade-form"
         }
@@ -399,8 +418,11 @@ class EmployeeBrigadeAssignmentController(
             bindingResult.reject("employeeBrigadeAssignment.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/employee-brigade-assignment-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("employeeBrigadeAssignment.save", "Не удалось сохранить назначение сотрудника в бригаду.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "employeeBrigadeAssignment.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить назначение сотрудника в бригаду."),
+            )
             populateForm(model, form, true)
             "organization/employee-brigade-assignment-form"
         }
@@ -439,8 +461,11 @@ class EmployeeBrigadeAssignmentController(
             bindingResult.reject("employeeBrigadeAssignment.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/employee-brigade-assignment-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("employeeBrigadeAssignment.update", "Не удалось обновить назначение сотрудника в бригаду.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "employeeBrigadeAssignment.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить назначение сотрудника в бригаду."),
+            )
             populateForm(model, form.copy(id = id), false)
             "organization/employee-brigade-assignment-form"
         }
@@ -514,8 +539,11 @@ class VehicleDriverAssignmentController(
             bindingResult.reject("vehicleDriverAssignment.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "organization/vehicle-driver-assignment-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleDriverAssignment.save", "Не удалось сохранить назначение водителя.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleDriverAssignment.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить назначение водителя."),
+            )
             populateForm(model, form, true)
             "organization/vehicle-driver-assignment-form"
         }
@@ -554,8 +582,11 @@ class VehicleDriverAssignmentController(
             bindingResult.reject("vehicleDriverAssignment.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "organization/vehicle-driver-assignment-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleDriverAssignment.update", "Не удалось обновить назначение водителя.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleDriverAssignment.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить назначение водителя."),
+            )
             populateForm(model, form.copy(id = id), false)
             "organization/vehicle-driver-assignment-form"
         }
@@ -576,7 +607,7 @@ class VehicleDriverAssignmentController(
     private fun populateForm(model: Model, form: VehicleDriverAssignmentForm, creating: Boolean) {
         model.addAttribute("assignment", form)
         model.addAttribute("vehicles", vehicleService.vehicleOptions())
-        model.addAttribute("employees", employeeService.employeeOptions())
+        model.addAttribute("employees", employeeService.driverOptions())
         model.addAttribute("assignmentTypes", VehicleDriverAssignmentService.assignmentTypes)
         model.addAttribute("pageTitle", if (creating) "Новое назначение водителя" else "Редактирование назначения водителя")
         model.addAttribute("submitLabel", if (creating) "Создать" else "Сохранить")

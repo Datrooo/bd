@@ -1,8 +1,19 @@
-SELECT e.id AS employee_id, e.last_name, e.first_name, e.middle_name,
-       rw.id AS repair_work_id, rw.work_type, rw.description,
-       rw.quantity, rw.cost, rw.completed_at,
-       r.id AS repair_id, r.start_date, r.end_date,
-       v.id AS vehicle_id, v.inventory_number, v.registration_number
+SELECT e.id AS "ID сотрудника",
+       e.last_name AS "Фамилия",
+       e.first_name AS "Имя",
+       e.middle_name AS "Отчество",
+       rw.id AS "ID работы",
+       rw.work_type AS "Вид работы",
+       rw.description AS "Описание работы",
+       rw.quantity AS "Количество",
+       rw.cost AS "Стоимость",
+       rw.completed_at AS "Дата выполнения",
+       r.id AS "ID ремонта",
+       r.start_date AS "Дата начала ремонта",
+       r.end_date AS "Дата окончания ремонта",
+       v.id AS "ID транспорта",
+       v.inventory_number AS "Инвентарный номер",
+       v.registration_number AS "Регистрационный номер"
 FROM repair_work rw
 JOIN employee e ON e.id = rw.employee_id
 JOIN repair r ON r.id = rw.repair_id

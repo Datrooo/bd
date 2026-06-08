@@ -1,6 +1,8 @@
-SELECT v.id AS vehicle_id, v.inventory_number, v.registration_number,
-       COUNT(r.id) AS repair_count,
-       COALESCE(SUM(r.total_cost), 0) AS total_repair_cost
+SELECT v.id AS "ID транспорта",
+       v.inventory_number AS "Инвентарный номер",
+       v.registration_number AS "Регистрационный номер",
+       COUNT(r.id) AS "Число ремонтов",
+       COALESCE(SUM(r.total_cost), 0) AS "Общая стоимость ремонтов"
 FROM repair r
 JOIN vehicle v ON v.id = r.vehicle_id
 WHERE v.id = :vehicle_id

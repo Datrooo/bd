@@ -1,7 +1,7 @@
-SELECT vc.name AS category,
-       c.component_type,
-       COUNT(vch.id) AS component_actions_count,
-       COALESCE(SUM(vch.cost), 0) AS total_component_cost
+SELECT vc.name AS "Категория транспорта",
+       c.component_type AS "Тип агрегата",
+       COUNT(vch.id) AS "Число установленных агрегатов",
+       COALESCE(SUM(vch.cost), 0) AS "Общая стоимость агрегатов"
 FROM vehicle_component_history vch
 JOIN vehicle v ON v.id = vch.vehicle_id
 JOIN vehicle_category vc ON vc.id = v.category_id

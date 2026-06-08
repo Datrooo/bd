@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import ru.autoenterprise.domain.TransportationRecordType
 import ru.autoenterprise.route.RouteService
 import ru.autoenterprise.vehicle.VehicleService
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class TransportationController {
@@ -70,8 +71,11 @@ class RouteVehicleAssignmentController(
             bindingResult.reject("routeVehicleAssignment.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "transportation/route-assignment-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("routeVehicleAssignment.save", "Не удалось сохранить закрепление транспорта за маршрутом.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "routeVehicleAssignment.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить закрепление транспорта за маршрутом."),
+            )
             populateForm(model, form, true)
             "transportation/route-assignment-form"
         }
@@ -110,8 +114,11 @@ class RouteVehicleAssignmentController(
             bindingResult.reject("routeVehicleAssignment.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "transportation/route-assignment-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("routeVehicleAssignment.update", "Не удалось обновить закрепление транспорта за маршрутом.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "routeVehicleAssignment.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить закрепление транспорта за маршрутом."),
+            )
             populateForm(model, form.copy(id = id), false)
             "transportation/route-assignment-form"
         }
@@ -294,8 +301,10 @@ class TransportationRecordController(
                 "Для грузовой поездки необходимо указать вес или объем груза."
             "Для SERVICE записи hours_used обязателен" in details ->
                 "Для служебной поездки необходимо указать часы работы."
-            else ->
-                "Не удалось сохранить эксплуатационную запись. Проверьте тип поездки и заполненные поля."
+            else -> dataAccessErrorMessage(
+                exception,
+                "Не удалось сохранить эксплуатационную запись. Проверьте тип поездки и заполненные поля.",
+            )
         }
     }
 }

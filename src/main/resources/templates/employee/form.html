@@ -43,7 +43,10 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label" for="position">Должность</label>
-                <input id="position" th:field="*{position}" class="form-control" required>
+                <select id="position" th:field="*{position}" class="form-select" required>
+                    <option value="">Выберите должность</option>
+                    <option th:each="position : ${positions}" th:value="${position}" th:text="${position.displayName}">Водитель</option>
+                </select>
                 <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('position')}" th:errors="*{position}"></div>
             </div>
             <div class="col-md-4">

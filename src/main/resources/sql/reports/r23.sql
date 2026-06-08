@@ -1,6 +1,11 @@
-SELECT b.id AS brigade_id, b.name AS brigade_name,
-       e.id AS employee_id, e.last_name, e.first_name, e.middle_name,
-       e.position, e.qualification
+SELECT b.id AS "ID бригады",
+       b.name AS "Бригада",
+       e.id AS "ID сотрудника",
+       e.last_name AS "Фамилия",
+       e.first_name AS "Имя",
+       e.middle_name AS "Отчество",
+       e.position AS "Должность",
+       e.qualification AS "Квалификация"
 FROM brigade b
 JOIN employee_brigade_assignment eba ON eba.brigade_id = b.id
 JOIN employee e ON e.id = eba.employee_id

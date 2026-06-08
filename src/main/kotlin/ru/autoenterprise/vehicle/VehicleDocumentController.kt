@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 @RequestMapping("/vehicle-acquisitions")
@@ -59,8 +60,11 @@ class VehicleAcquisitionController(
             bindingResult.reject("vehicleAcquisition.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "vehicle/acquisition-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleAcquisition.save", "Не удалось сохранить документ поступления.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleAcquisition.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить документ поступления."),
+            )
             populateForm(model, form, true)
             "vehicle/acquisition-form"
         }
@@ -99,8 +103,11 @@ class VehicleAcquisitionController(
             bindingResult.reject("vehicleAcquisition.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "vehicle/acquisition-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleAcquisition.update", "Не удалось обновить документ поступления.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleAcquisition.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить документ поступления."),
+            )
             populateForm(model, form.copy(id = id), false)
             "vehicle/acquisition-form"
         }
@@ -170,8 +177,11 @@ class VehicleDisposalController(
             bindingResult.reject("vehicleDisposal.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "vehicle/disposal-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleDisposal.save", "Не удалось сохранить документ выбытия.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleDisposal.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить документ выбытия."),
+            )
             populateForm(model, form, true)
             "vehicle/disposal-form"
         }
@@ -210,8 +220,11 @@ class VehicleDisposalController(
             bindingResult.reject("vehicleDisposal.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "vehicle/disposal-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleDisposal.update", "Не удалось обновить документ выбытия.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleDisposal.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить документ выбытия."),
+            )
             populateForm(model, form.copy(id = id), false)
             "vehicle/disposal-form"
         }

@@ -84,6 +84,7 @@ CREATE TABLE employee (
     status VARCHAR(50) NOT NULL,
     notes TEXT,
     CONSTRAINT chk_employee_status CHECK (status IN ('ACTIVE', 'VACATION', 'SICK_LEAVE', 'DISMISSED')),
+    CONSTRAINT chk_employee_position CHECK (position IN ('WORKSHOP_CHIEF', 'MASTER', 'BRIGADIER', 'DRIVER', 'WELDER', 'LOCKSMITH', 'DISPATCHER', 'HR')),
     CONSTRAINT chk_employee_dates CHECK (dismissal_date IS NULL OR dismissal_date >= hire_date)
 );
 

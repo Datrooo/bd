@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import ru.autoenterprise.domain.EmployeePosition
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class EmployeeController(
@@ -45,6 +47,7 @@ class EmployeeController(
         model: Model,
         redirectAttributes: RedirectAttributes,
     ): String {
+        validatePosition(form, bindingResult)
         if (bindingResult.hasErrors()) {
             populateForm(model, form, true)
             return "employee/form"
@@ -54,8 +57,15 @@ class EmployeeController(
             employeeService.createEmployee(form)
             redirectAttributes.addFlashAttribute("successMessage", "Сотрудник добавлен.")
             "redirect:/employees"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("employee.save", "Не удалось сохранить сотрудника. Проверьте табельный номер и даты.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "employee.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить сотрудника. Проверьте табельный номер и даты."),
+            )
+            populateForm(model, form, true)
+            "employee/form"
+        } catch (ex: IllegalArgumentException) {
+            bindingResult.rejectValue("position", "employee.position.invalid", ex.message ?: "Выберите должность из списка.")
             populateForm(model, form, true)
             "employee/form"
         }
@@ -85,6 +95,7 @@ class EmployeeController(
         model: Model,
         redirectAttributes: RedirectAttributes,
     ): String {
+        validatePosition(form, bindingResult)
         if (bindingResult.hasErrors()) {
             populateForm(model, form.copy(id = id), false)
             return "employee/form"
@@ -98,8 +109,15 @@ class EmployeeController(
             bindingResult.reject("employee.update", "Сотрудник не найден.")
             populateForm(model, form.copy(id = id), false)
             "employee/form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("employee.update", "Не удалось обновить сотрудника. Проверьте табельный номер и даты.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "employee.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить сотрудника. Проверьте табельный номер и даты."),
+            )
+            populateForm(model, form.copy(id = id), false)
+            "employee/form"
+        } catch (ex: IllegalArgumentException) {
+            bindingResult.rejectValue("position", "employee.position.invalid", ex.message ?: "Выберите должность из списка.")
             populateForm(model, form.copy(id = id), false)
             "employee/form"
         }
@@ -123,8 +141,15 @@ class EmployeeController(
     private fun populateForm(model: Model, form: EmployeeForm, creating: Boolean) {
         model.addAttribute("employee", form)
         model.addAttribute("statuses", EmployeeService.employeeStatuses)
+        model.addAttribute("positions", EmployeeService.employeePositions)
         model.addAttribute("pageTitle", if (creating) "Новый сотрудник" else "Редактирование сотрудника")
         model.addAttribute("submitLabel", if (creating) "Создать" else "Сохранить")
         model.addAttribute("formAction", if (creating) "/employees" else "/employees/${form.id}")
+    }
+
+    private fun validatePosition(form: EmployeeForm, bindingResult: BindingResult) {
+        if (form.position.isNotBlank() && EmployeePosition.fromCode(form.position) == null) {
+            bindingResult.rejectValue("position", "employee.position.invalid", "Выберите должность из списка.")
+        }
     }
 }

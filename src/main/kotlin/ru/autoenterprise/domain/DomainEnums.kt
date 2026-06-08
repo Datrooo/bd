@@ -1,5 +1,7 @@
 package ru.autoenterprise.domain
 
+import java.util.Locale
+
 enum class VehicleStatus {
     ACTIVE,
     IN_REPAIR,
@@ -13,6 +15,30 @@ enum class EmployeeStatus {
     VACATION,
     SICK_LEAVE,
     DISMISSED,
+}
+
+enum class EmployeePosition(val displayName: String) {
+    WORKSHOP_CHIEF("Начальник цеха"),
+    MASTER("Мастер"),
+    BRIGADIER("Бригадир"),
+    DRIVER("Водитель"),
+    WELDER("Сварщик"),
+    LOCKSMITH("Слесарь"),
+    DISPATCHER("Диспетчер"),
+    HR("Специалист по кадрам");
+
+    companion object {
+        fun fromCode(code: String?): EmployeePosition? {
+            val normalizedCode = code?.trim()?.uppercase(Locale.ROOT) ?: return null
+            return entries.firstOrNull { position -> position.name == normalizedCode }
+        }
+
+        fun displayNameFor(code: String): String =
+            fromCode(code)?.displayName ?: code
+
+        fun isDriver(code: String?): Boolean =
+            fromCode(code) == DRIVER
+    }
 }
 
 enum class VehicleAcquisitionType {

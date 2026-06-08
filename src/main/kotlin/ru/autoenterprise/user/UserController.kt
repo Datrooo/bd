@@ -1,6 +1,7 @@
 package ru.autoenterprise.user
 
 import ru.autoenterprise.employee.EmployeeService
+import ru.autoenterprise.web.dataAccessErrorMessage
 import jakarta.persistence.EntityNotFoundException
 import jakarta.validation.Valid
 import org.springframework.dao.DataAccessException
@@ -63,8 +64,11 @@ class UserController(
             bindingResult.reject("user.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "user/form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("user.save", "Не удалось сохранить пользователя. Логин должен быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "user.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить пользователя. Логин должен быть уникальным."),
+            )
             populateForm(model, form, true)
             "user/form"
         }
@@ -112,8 +116,11 @@ class UserController(
             bindingResult.reject("user.update", ex.message ?: "Не удалось обновить пользователя.")
             populateForm(model, form, false, formActionId = id)
             "user/form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("user.update", "Не удалось обновить пользователя. Логин должен быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "user.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить пользователя. Логин должен быть уникальным."),
+            )
             populateForm(model, form, false, formActionId = id)
             "user/form"
         }

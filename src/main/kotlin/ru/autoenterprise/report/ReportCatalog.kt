@@ -21,7 +21,7 @@ class ReportCatalog(
         definition("r10", "Число ремонтов и их стоимость для категории транспорта за период", "Количество ремонтов и общая стоимость по категории транспорта.", REPAIRS_GROUP, listOf(ReportParameterDefinition.category(), ReportParameterDefinition.dateRange())),
         definition("r11", "Число ремонтов и их стоимость для марки транспорта за период", "Количество ремонтов и общая стоимость по марке транспорта.", REPAIRS_GROUP, listOf(ReportParameterDefinition.brand(), ReportParameterDefinition.dateRange())),
         definition("r12", "Число ремонтов и их стоимость для конкретной автомашины за период", "Количество ремонтов и общая стоимость по выбранной машине.", REPAIRS_GROUP, listOf(ReportParameterDefinition.vehicle(), ReportParameterDefinition.dateRange())),
-        definition("r13", "Подчиненность персонала", "Иерархия рабочие -> бригадиры -> мастера -> начальники цехов.", PERSONNEL_GROUP, listOf(ReportParameterDefinition.none())),
+        definition("r13", "Подчиненность персонала", "Текущий состав бригад с непосредственным руководителем и дальнейшей цепочкой подчиненности.", PERSONNEL_GROUP, listOf(ReportParameterDefinition.none())),
         definition("r14", "Наличие гаражного хозяйства в целом", "Список объектов гаражного хозяйства предприятия.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),
         definition("r15", "Наличие гаражного хозяйства по каждой категории транспорта", "Текущее размещение транспорта по объектам гаражного хозяйства и категориям.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),
         definition("r16", "Распределение автотранспорта на предприятии", "Текущее размещение транспорта по объектам предприятия.", GARAGE_GROUP, listOf(ReportParameterDefinition.none())),

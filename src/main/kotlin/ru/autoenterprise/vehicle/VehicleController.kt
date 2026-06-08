@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class VehicleController(
@@ -61,7 +62,10 @@ class VehicleController(
             populateVehicleForm(model, form, true)
             "vehicle/form"
         } catch (ex: DataAccessException) {
-            bindingResult.reject("vehicle.save", "Не удалось сохранить транспорт. Проверьте уникальность номеров и обязательные поля.")
+            bindingResult.reject(
+                "vehicle.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить транспорт. Проверьте уникальность номеров и обязательные поля."),
+            )
             populateVehicleForm(model, form, true)
             "vehicle/form"
         }
@@ -105,7 +109,10 @@ class VehicleController(
             populateVehicleForm(model, form.copy(id = id), false)
             "vehicle/form"
         } catch (ex: DataAccessException) {
-            bindingResult.reject("vehicle.update", "Не удалось обновить транспорт. Проверьте уникальность номеров и обязательные поля.")
+            bindingResult.reject(
+                "vehicle.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить транспорт. Проверьте уникальность номеров и обязательные поля."),
+            )
             populateVehicleForm(model, form.copy(id = id), false)
             "vehicle/form"
         }
@@ -173,8 +180,11 @@ class VehicleCategoryController(
             categoryService.createCategory(form)
             redirectAttributes.addFlashAttribute("successMessage", "Категория транспорта добавлена.")
             "redirect:/vehicle-categories"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("category.save", "Не удалось сохранить категорию. Название должно быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "category.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить категорию. Название должно быть уникальным."),
+            )
             populateCategoryForm(model, form, true)
             "vehicle/category-form"
         }
@@ -217,8 +227,11 @@ class VehicleCategoryController(
             bindingResult.reject("category.update", "Категория транспорта не найдена.")
             populateCategoryForm(model, form.copy(id = id), false)
             "vehicle/category-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("category.update", "Не удалось обновить категорию. Название должно быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "category.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить категорию. Название должно быть уникальным."),
+            )
             populateCategoryForm(model, form.copy(id = id), false)
             "vehicle/category-form"
         }

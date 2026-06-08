@@ -1,6 +1,8 @@
-SELECT vc.name AS category,
-       go.id AS garage_object_id, go.name AS garage_object_name, go.object_type,
-       COUNT(DISTINCT v.id) AS vehicles_count
+SELECT vc.name AS "Категория транспорта",
+       go.id AS "ID гаражного объекта",
+       go.name AS "Гаражный объект",
+       go.object_type AS "Тип объекта",
+       COUNT(DISTINCT v.id) AS "Число единиц транспорта"
 FROM vehicle_location_history vlh
 JOIN garage_object go ON go.id = vlh.garage_object_id
 JOIN vehicle v ON v.id = vlh.vehicle_id
