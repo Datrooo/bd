@@ -1,7 +1,14 @@
-SELECT w.id AS workshop_id, w.name AS workshop_name,
-       s.id AS section_id, s.name AS section_name,
-       b.id AS brigade_id, b.name AS brigade_name,
-       e.id AS employee_id, e.last_name, e.first_name, e.middle_name, e.position
+SELECT w.id AS "ID цеха",
+       w.name AS "Цех",
+       s.id AS "ID участка",
+       s.name AS "Участок",
+       b.id AS "ID бригады",
+       b.name AS "Бригада",
+       e.id AS "ID сотрудника",
+       e.last_name AS "Фамилия",
+       e.first_name AS "Имя",
+       e.middle_name AS "Отчество",
+       e.position AS "Должность"
 FROM workshop w
 JOIN section s ON s.workshop_id = w.id
 JOIN brigade b ON b.section_id = s.id

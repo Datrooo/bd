@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.autoenterprise.domain.EmployeePosition
 import ru.autoenterprise.domain.EmployeeStatus
 
 @Service
@@ -19,7 +20,7 @@ class EmployeeService(
                 id = employee.id!!,
                 personnelNumber = employee.personnelNumber,
                 fullName = fullName(employee),
-                position = employee.position,
+                position = EmployeePosition.displayNameFor(employee.position),
                 status = employee.status.name,
                 hireDate = employee.hireDate,
             )
@@ -27,6 +28,12 @@ class EmployeeService(
 
     fun employeeOptions(): List<EmployeeOption> =
         employeeRepository.findAll(Sort.by("lastName").ascending().and(Sort.by("firstName").ascending()))
+            .map { employee ->
+                EmployeeOption(employee.id!!, fullName(employee))
+            }
+
+    fun driverOptions(): List<EmployeeOption> =
+        employeeRepository.findAllByPositionIgnoreCaseOrderByLastNameAscFirstNameAsc(EmployeePosition.DRIVER.name)
             .map { employee ->
                 EmployeeOption(employee.id!!, fullName(employee))
             }
@@ -44,7 +51,7 @@ class EmployeeService(
             birthDate = employee.birthDate,
             hireDate = employee.hireDate,
             dismissalDate = employee.dismissalDate,
-            position = employee.position,
+            position = EmployeePosition.fromCode(employee.position)?.name ?: employee.position,
             qualification = employee.qualification,
             phone = employee.phone,
             email = employee.email,
@@ -76,6 +83,7 @@ class EmployeeService(
 
     companion object {
         val employeeStatuses: List<EmployeeStatus> = EmployeeStatus.entries
+        val employeePositions: List<EmployeePosition> = EmployeePosition.entries
 
         private const val pageSize = 10
 
@@ -95,7 +103,7 @@ class EmployeeService(
         employee.birthDate = form.birthDate
         employee.hireDate = form.hireDate!!
         employee.dismissalDate = form.dismissalDate
-        employee.position = form.position.trim()
+        employee.position = normalizePosition(form.position).name
         employee.qualification = form.qualification?.trim().takeUnless { it.isNullOrBlank() }
         employee.phone = form.phone?.trim().takeUnless { it.isNullOrBlank() }
         employee.email = form.email?.trim().takeUnless { it.isNullOrBlank() }
@@ -103,4 +111,8 @@ class EmployeeService(
         employee.status = form.status
         employee.notes = form.notes?.trim().takeUnless { it.isNullOrBlank() }
     }
+
+    private fun normalizePosition(position: String): EmployeePosition =
+        EmployeePosition.fromCode(position)
+            ?: throw IllegalArgumentException("Выберите должность из списка.")
 }

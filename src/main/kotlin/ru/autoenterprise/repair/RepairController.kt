@@ -21,6 +21,7 @@ import ru.autoenterprise.organization.BrigadeService
 import ru.autoenterprise.organization.SectionManagementService
 import ru.autoenterprise.organization.WorkshopService
 import ru.autoenterprise.vehicle.VehicleService
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class RepairsController {
@@ -65,8 +66,11 @@ class RepairTypeController(
             repairTypeService.createType(form)
             redirectAttributes.addFlashAttribute("successMessage", "Тип ремонта добавлен.")
             "redirect:/repair-types"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("repairType.save", "Не удалось сохранить тип ремонта. Название должно быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "repairType.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить тип ремонта. Название должно быть уникальным."),
+            )
             populateForm(model, form, true)
             "repair/type-form"
         }
@@ -105,8 +109,11 @@ class RepairTypeController(
             bindingResult.reject("repairType.update", "Тип ремонта не найден.")
             populateForm(model, form.copy(id = id), false)
             "repair/type-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("repairType.update", "Не удалось обновить тип ремонта. Название должно быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "repairType.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить тип ремонта. Название должно быть уникальным."),
+            )
             populateForm(model, form.copy(id = id), false)
             "repair/type-form"
         }
@@ -178,8 +185,11 @@ class RepairJournalController(
             bindingResult.reject("repair.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "repair/repair-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("repair.save", "Не удалось сохранить ремонт.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "repair.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить ремонт."),
+            )
             populateForm(model, form, true)
             "repair/repair-form"
         }
@@ -218,8 +228,11 @@ class RepairJournalController(
             bindingResult.reject("repair.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "repair/repair-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("repair.update", "Не удалось обновить ремонт.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "repair.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить ремонт."),
+            )
             populateForm(model, form.copy(id = id), false)
             "repair/repair-form"
         }
@@ -294,8 +307,11 @@ class RepairWorkController(
             bindingResult.reject("repairWork.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "repair/work-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("repairWork.save", "Не удалось сохранить ремонтную работу.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "repairWork.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить ремонтную работу."),
+            )
             populateForm(model, form, true)
             "repair/work-form"
         }
@@ -334,8 +350,11 @@ class RepairWorkController(
             bindingResult.reject("repairWork.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "repair/work-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("repairWork.update", "Не удалось обновить ремонтную работу.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "repairWork.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить ремонтную работу."),
+            )
             populateForm(model, form.copy(id = id), false)
             "repair/work-form"
         }

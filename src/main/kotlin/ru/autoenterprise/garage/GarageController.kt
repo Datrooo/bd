@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import ru.autoenterprise.organization.SectionManagementService
 import ru.autoenterprise.organization.WorkshopService
 import ru.autoenterprise.vehicle.VehicleService
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class GarageController {
@@ -74,8 +75,11 @@ class GarageObjectController(
             bindingResult.reject("garageObject.save", ex.message ?: "Проверьте данные формы.")
             populateForm(model, form, true)
             "garage/object-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("garageObject.save", "Не удалось сохранить объект гаражного хозяйства.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "garageObject.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить объект гаражного хозяйства."),
+            )
             populateForm(model, form, true)
             "garage/object-form"
         }
@@ -118,8 +122,11 @@ class GarageObjectController(
             bindingResult.reject("garageObject.update", ex.message ?: "Проверьте данные формы.")
             populateForm(model, form.copy(id = id), false)
             "garage/object-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("garageObject.update", "Не удалось обновить объект гаражного хозяйства.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "garageObject.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить объект гаражного хозяйства."),
+            )
             populateForm(model, form.copy(id = id), false)
             "garage/object-form"
         }
@@ -195,8 +202,11 @@ class VehicleLocationHistoryController(
             bindingResult.reject("vehicleLocation.save", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form, true)
             "garage/location-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleLocation.save", "Не удалось сохранить историю размещения транспорта.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleLocation.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить историю размещения транспорта."),
+            )
             populateForm(model, form, true)
             "garage/location-form"
         }
@@ -235,8 +245,11 @@ class VehicleLocationHistoryController(
             bindingResult.reject("vehicleLocation.update", ex.message ?: "Связанные данные не найдены.")
             populateForm(model, form.copy(id = id), false)
             "garage/location-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("vehicleLocation.update", "Не удалось обновить историю размещения транспорта.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "vehicleLocation.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить историю размещения транспорта."),
+            )
             populateForm(model, form.copy(id = id), false)
             "garage/location-form"
         }

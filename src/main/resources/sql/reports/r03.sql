@@ -1,3 +1,3 @@
-SELECT COUNT(*) AS total_drivers
+SELECT COUNT(*) AS "Общее число водителей"
 FROM employee
 WHERE position = 'DRIVER';

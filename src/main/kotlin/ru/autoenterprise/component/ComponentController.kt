@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import ru.autoenterprise.repair.RepairService
 import ru.autoenterprise.vehicle.VehicleService
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class ComponentsController {
@@ -63,8 +64,11 @@ class ComponentCatalogController(
             componentService.createComponent(form)
             redirectAttributes.addFlashAttribute("successMessage", "Агрегат добавлен.")
             "redirect:/components-catalog"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("component.save", "Не удалось сохранить агрегат. Серийный номер должен быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "component.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить агрегат. Серийный номер должен быть уникальным."),
+            )
             populateForm(model, form, true)
             "component/component-form"
         }
@@ -103,8 +107,11 @@ class ComponentCatalogController(
             bindingResult.reject("component.update", "Агрегат не найден.")
             populateForm(model, form.copy(id = id), false)
             "component/component-form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("component.update", "Не удалось обновить агрегат. Серийный номер должен быть уникальным.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "component.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить агрегат. Серийный номер должен быть уникальным."),
+            )
             populateForm(model, form.copy(id = id), false)
             "component/component-form"
         }
@@ -263,7 +270,10 @@ class VehicleComponentHistoryController(
                 "Для ремонта или замены агрегата необходимо выбрать ремонт."
             "повторная установка" in details || "следующим действием может быть только установка" in details ->
                 "Действие нарушает хронологическую последовательность истории агрегата."
-            else -> "Не удалось сохранить историю агрегата. Проверьте последовательность действий, транспорт, ремонт и дату."
+            else -> dataAccessErrorMessage(
+                exception,
+                "Не удалось сохранить историю агрегата. Проверьте последовательность действий, транспорт, ремонт и дату.",
+            )
         }
     }
 }

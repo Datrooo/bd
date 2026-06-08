@@ -1,7 +1,16 @@
-SELECT r.id AS route_id, r.route_number, r.name AS route_name, r.route_type,
-       v.id AS vehicle_id, v.inventory_number, v.registration_number,
-       vc.name AS vehicle_category, v.brand_name, v.model_name,
-       rva.start_date, rva.end_date, rva.shift_info
+SELECT r.id AS "ID маршрута",
+       r.route_number AS "Номер маршрута",
+       r.name AS "Название маршрута",
+       r.route_type AS "Тип маршрута",
+       v.id AS "ID транспорта",
+       v.inventory_number AS "Инвентарный номер",
+       v.registration_number AS "Регистрационный номер",
+       vc.name AS "Категория транспорта",
+       v.brand_name AS "Марка",
+       v.model_name AS "Модель",
+       rva.start_date AS "Дата начала",
+       rva.end_date AS "Дата окончания",
+       rva.shift_info AS "Информация о смене"
 FROM route_vehicle_assignment rva
 JOIN route r ON r.id = rva.route_id
 JOIN vehicle v ON v.id = rva.vehicle_id

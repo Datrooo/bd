@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface EmployeeRepository : JpaRepository<EmployeeEntity, Long> {
     fun findAllBy(pageable: Pageable): Page<EmployeeEntity>
+
+    fun findAllByPositionIgnoreCaseOrderByLastNameAscFirstNameAsc(position: String): List<EmployeeEntity>
 }

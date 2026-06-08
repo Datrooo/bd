@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import ru.autoenterprise.web.dataAccessErrorMessage
 
 @Controller
 class RouteController(
@@ -54,8 +55,11 @@ class RouteController(
             routeService.createRoute(form)
             redirectAttributes.addFlashAttribute("successMessage", "Маршрут добавлен.")
             "redirect:/routes"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("route.save", "Не удалось сохранить маршрут. Проверьте уникальность номера/типа и значения полей.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "route.save",
+                dataAccessErrorMessage(ex, "Не удалось сохранить маршрут. Проверьте уникальность номера/типа и значения полей."),
+            )
             populateForm(model, form, true)
             "route/form"
         }
@@ -98,8 +102,11 @@ class RouteController(
             bindingResult.reject("route.update", "Маршрут не найден.")
             populateForm(model, form.copy(id = id), false)
             "route/form"
-        } catch (_: DataAccessException) {
-            bindingResult.reject("route.update", "Не удалось обновить маршрут. Проверьте уникальность номера/типа и значения полей.")
+        } catch (ex: DataAccessException) {
+            bindingResult.reject(
+                "route.update",
+                dataAccessErrorMessage(ex, "Не удалось обновить маршрут. Проверьте уникальность номера/типа и значения полей."),
+            )
             populateForm(model, form.copy(id = id), false)
             "route/form"
         }

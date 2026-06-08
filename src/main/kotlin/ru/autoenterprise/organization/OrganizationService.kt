@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.autoenterprise.domain.EmployeePosition
 import ru.autoenterprise.domain.VehicleDriverAssignmentType
 import ru.autoenterprise.employee.EmployeeEntity
 import ru.autoenterprise.employee.EmployeeRepository
@@ -371,8 +372,14 @@ class VehicleDriverAssignmentService(
 
     private fun findEmployee(id: Long?): EmployeeEntity {
         val employeeId = id ?: throw EntityNotFoundException("Сотрудник не найден.")
-        return employeeRepository.findById(employeeId)
+        val employee = employeeRepository.findById(employeeId)
             .orElseThrow { EntityNotFoundException("Сотрудник не найден.") }
+
+        if (!EmployeePosition.isDriver(employee.position)) {
+            throw EntityNotFoundException("Сотрудник ${EmployeeService.fullName(employee)} не является водителем.")
+        }
+
+        return employee
     }
 
     private fun vehicleLabel(vehicle: VehicleEntity): String =
